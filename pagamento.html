@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Raízes do Nordeste — Pagamento</title>
-<link href="https://fonts.googleapis.com/css2+family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --terra: #C4622D; --terra-dark: #9E4A1E; --terra-light: #F5EAE0;
@@ -40,22 +40,17 @@
 
   .methods { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.2rem; }
   .method-opt { display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; cursor: pointer; }
-  .method-opt input[type="radio"] { accent-color: var(--terra); width: 16px; height: 16px; }
+  .method-opt input type="radio" { accent-color: var(--terra); }
   .method-opt.selected { border-color: var(--terra); background: #FFF8F4; }
 
   .card-fields { display: none; flex-direction: column; gap: 0.9rem; margin-bottom: 1.2rem; }
   .card-fields.visible { display: flex; }
   .field label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase; }
   .field input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text); background: var(--areia); outline: none; }
-  .field input.error { border-color: var(--error); }
-  .field .errmsg { font-size: 0.76rem; color: var(--error); margin-top: 0.3rem; display: none; }
-  .field input.error + .errmsg { display: block; }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
 
   .gateway-notice { background: #FFF8F4; border: 1px solid #E8C4A8; border-radius: 10px; padding: 0.9rem 1rem; margin-bottom: 1.2rem; font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 10px; }
   .btn-pay { width: 100%; background: var(--terra); color: #fff; border: none; border-radius: 8px; padding: 0.95rem; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; }
-  .btn-pay:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
-
   .processing-overlay { position: fixed; inset: 0; background: rgba(26,18,8,0.65); z-index: 50; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 1.2rem; }
   .processing-overlay.show { display: flex; }
   .spinner { width: 52px; height: 52px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.2); border-top-color: #fff; animation: spin 0.8s linear infinite; }
@@ -97,21 +92,15 @@
       </div>
 
       <div class="card-fields visible" id="campos-cartao">
-        <div class="field">
-          <label>Número do cartão</label>
-          <input type="text" id="num-cartao" placeholder="0000 0000 0000 0000" maxlength="19" oninput="mascaraCartao(this)">
-        </div>
-        <div class="field">
-          <label>Nome no cartão</label>
-          <input type="text" id="nome-cartao" placeholder="Como aparece no cartão">
-        </div>
+        <div class="field"><label>Número do cartão</label><input type="text" id="num-cartao" placeholder="0000 0000 0000 0000" maxlength="19" oninput="mascaraCartao(this)"></div>
+        <div class="field"><label>Nome no cartão</label><input type="text" id="nome-cartao" placeholder="Como aparece no cartão"></div>
         <div class="row2">
           <div class="field"><label>Validade</label><input type="text" id="validade" placeholder="MM/AA" maxlength="5" oninput="mascaraValidade(this)"></div>
           <div class="field"><label>CVV</label><input type="text" id="cvv" placeholder="123" maxlength="4"></div>
         </div>
       </div>
 
-      <div id="pix-info" style="display:none; margin-bottom:1.2rem;"><div class="gateway-notice"><span>⚡ Após confirmar, um QR Code Pix será gerado automaticamente.</span></div></div>
+      <div id="pix-info" style="display:none; margin-bottom:1.2rem;"><div class="gateway-notice"><span>⚡ O código Pix expira em 5 minutos após a emissão secundária.</span></div></div>
       <button class="btn-pay" id="btn-pagar" onclick="iniciarPagamento()">Confirmar pagamento</button>
     </div>
   </div>
@@ -126,15 +115,24 @@
     
     <div class="card" id="card-logistica-entrega" style="margin-top:1rem;">
       <div class="card-title">Forma de Entrega</div>
-      <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.7"></p>
+      
+      <p id="texto-logistica-retirada" style="font-size:0.85rem; color:var(--text-muted); line-height:1.7; display:none;"></p>
+      
+      <div id="formulario-endereco-delivery" style="display:none; flex-direction:column; gap:0.8rem; margin-top:0.5rem;">
+        <p style="font-size:0.82rem; color:var(--terra); font-weight:500;">🛵 Entrega disponível para sua área. Digite as coordenadas:</p>
+        <div class="field" style="margin-bottom:0;"><input type="text" id="deliv-rua" placeholder="Rua / Avenida" style="padding: 0.5rem 0.7rem; font-size:0.85rem;"></div>
+        <div class="row2">
+          <div class="field" style="margin-bottom:0;"><input type="text" id="deliv-num" placeholder="Nº" style="padding: 0.5rem 0.7rem; font-size:0.85rem;"></div>
+          <div class="field" style="margin-bottom:0;"><input type="text" id="deliv-bairro" placeholder="Bairro" style="padding: 0.5rem 0.7rem; font-size:0.85rem;"></div>
+        </div>
+        <div class="field" style="margin-bottom:0;"><input type="text" id="deliv-ref" placeholder="Complemento / Referência" style="padding: 0.5rem 0.7rem; font-size:0.85rem;"></div>
+        <p style="font-size:0.75rem; color:var(--text-muted);">⏱ Entrega estimada em 35-50 min<br>💰 Taxa de entrega: <span style="color:var(--success); font-weight:bold;">Grátis</span></p>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="processing-overlay" id="processing">
-  <div class="spinner"></div>
-  <div style="color:#fff;" id="proc-text">Processando transação...</div>
-</div>
+<div class="processing-overlay" id="processing"><div class="spinner"></div><div style="color:#fff;">Processando...</div></div>
 
 <script>
   function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.',','); }
@@ -143,24 +141,30 @@
     const raw = localStorage.getItem('pedido');
     const itens = raw ? JSON.parse(raw) : [];
     const container = document.getElementById('resumo-itens');
-    if (!itens.length) { container.innerHTML = '<p>Sem itens no carrinho.</p>'; document.getElementById('btn-pagar').disabled = true; return; }
+    if (!itens.length) { container.innerHTML = '<p>Vazio</p>'; document.getElementById('btn-pagar').disabled = true; return; }
     
     let total = 0;
     container.innerHTML = itens.map(i => { total += (i.preco * i.qty); return `<div class="order-item"><span>${i.emoji} ${i.nome} × ${i.qty}</span><span class="order-item-price">${fmt(i.preco * i.qty)}</span></div>`; }).join('');
     document.getElementById('resumo-total').textContent = fmt(total);
     document.getElementById('pontos-ganhar').textContent = Math.floor(total) + ' pontos';
 
-    // === EXECUÇÃO DO FLUXO MULTIUNIDADES ADAPTATIVO ===
     const un = localStorage.getItem('unidadeSelecionada') || 'recreio';
-    const logisticaConfig = {
-      'recreio': { titulo: 'Forma de Entrega: Retirada', html: '📍 <strong>Unidade Recreio — RJ</strong><br>Av. Lúcio Costa, 12000 · Recreio<br><br>⏱ Tempo de Preparo: <strong>15–20 min</strong><br>🏷 Retire diretamente no Balcão ou Totem.' },
-      'centro': { titulo: 'Forma de Entrega: Retirada', html: '📍 <strong>Unidade Centro — RJ</strong><br>Av. Rio Branco, 500 · Centro<br><br>⏱ Tempo de Preparo: <strong>5–10 min</strong><br>🏷 Retire diretamente no Balcão ou Totem.' },
-      'campo-grande': { titulo: 'Forma de Entrega: Delivery 🛵', html: '🏠 <strong>Entrega em Domicílio (Campo Grande)</strong><br>O pedido será enviado imediatamente para o endereço preenchido em seu perfil.<br><br>⏱ Tempo de Envio: <strong>35–50 min</strong><br>💰 Taxa de entrega: <strong style="color:var(--success)">Grátis pelo site!</strong>' }
-    };
-    
     const cardLogistica = document.getElementById('card-logistica-entrega');
-    cardLogistica.querySelector('.card-title').textContent = logisticaConfig[un].titulo;
-    cardLogistica.querySelector('p').innerHTML = logisticaConfig[un].html;
+    const txtRetirada = document.getElementById('texto-logistica-retirada');
+    const formDelivery = document.getElementById('formulario-endereco-delivery');
+
+    if (un === 'campo-grande') {
+      cardLogistica.querySelector('.card-title').textContent = 'Endereço de Entrega 🛵';
+      txtRetirada.style.display = 'none'; formDelivery.style.display = 'flex';
+    } else {
+      cardLogistica.querySelector('.card-title').textContent = 'Forma de Entrega: Retirada';
+      formDelivery.style.display = 'none'; txtRetirada.style.display = 'block';
+      const mapas = {
+        'recreio': '📍 <strong>Unidade Recreio — RJ</strong><br>Av. Lúcio Costa, 12000<br><br>⏱ Preparo: 15–20 min<br>🏷 Retire no balcão.',
+        'centro': '📍 <strong>Unidade Centro — RJ</strong><br>Av. Rio Branco, 500<br><br>⏱ Preparo: 5–10 min<br>🏷 Retire no balcão.'
+      };
+      txtRetirada.innerHTML = mapas[un];
+    }
   }
 
   function selecionarMetodo(m) {
@@ -173,14 +177,26 @@
   function mascaraValidade(el) { let v = el.value.replace(/\D/g,'').substring(0,4); if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2); el.value = v; }
 
   function iniciarPagamento() {
+    const un = localStorage.getItem('unidadeSelecionada') || 'recreio';
+    let strEndereco = 'Retirada solicitada presencialmente';
+
+    if (un === 'campo-grande') {
+      const r = document.getElementById('deliv-rua').value.trim();
+      const n = document.getElementById('deliv-num').value.trim();
+      const b = document.getElementById('deliv-bairro').value.trim();
+      if (!r || !n || !b) { alert('Atenção: Os campos Rua, Número e Bairro são obrigatórios para realizarmos o envio residencial.'); return; }
+      strEndereco = `${r}, nº ${n} - ${b}`;
+    }
+
     document.getElementById('processing').classList.add('show');
     setTimeout(() => {
-      const pedidoCompleto = {
+      const finalizado = {
         itens: JSON.parse(localStorage.getItem('pedido') || '[]'),
         codigo: 'RN' + Math.floor(10000 + Math.random() * 90000),
-        hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'})
+        hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}),
+        enderecoEntrega: strEndereco
       };
-      localStorage.setItem('pedidoConfirmado', JSON.stringify(pedidoCompleto));
+      localStorage.setItem('pedidoConfirmado', JSON.stringify(finalizado));
       window.location.href = 'confirmacao.html';
     }, 2500);
   }
