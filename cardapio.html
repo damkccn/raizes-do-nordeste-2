@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raízes do Nordeste — Cardápio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --terra: #C4622D;
+    --terra-dark: #9E4A1E;
+    --terra-light: #F5EAE0;
+    --areia: #F5EFE6;
+    --text: #1A1208;
+    --text-muted: #6B5744;
+    --border: #D9C4B0;
+    --white: #FFFDF9;
+    --badge-bg: #FFF3EB;
+    --badge-color: #C4622D;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--areia);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-link {
+    background: none; border: none; padding: 6px 12px; border-radius: 6px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.83rem; color: var(--text-muted);
+    cursor: pointer; transition: background 0.15s, color 0.15s; text-decoration: none; display: inline-flex; align-items: center;
+  }
+  .nav-link:hover { background: var(--areia); color: var(--terra); }
+  .nav-link.active { color: var(--terra); font-weight: 500; }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--terra);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .unidade-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--terra-light);
+    border: 1px solid #E8C4A8;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.78rem;
+    color: var(--terra-dark);
+    font-weight: 500;
+  }
+  .cart-btn {
+    background: var(--terra);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .cart-btn:hover { background: var(--terra-dark); }
+  .cart-count {
+    background: #fff;
+    color: var(--terra);
+    border-radius: 50%;
+    width: 20px; height: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Hero da unidade */
+  .hero {
+    background: var(--terra);
+    color: #fff;
+    padding: 1.5rem 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%);
+    background-size: 20px 20px;
+    opacity: 0.05;
+  }
+  .hero-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .hero h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+  }
+  .hero p { font-size: 0.85rem; opacity: 0.8; }
+
+  /* Filtros de categoria */
+  .filters {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .filters-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    display: flex;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .filter-btn {
+    background: none;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .filter-btn.active {
+    color: var(--terra);
+    border-bottom-color: var(--terra);
+  }
+  .filter-btn:hover { color: var(--terra); }
+
+  /* Grid de produtos */
+  main { max-width: 900px; margin: 0 auto; padding: 1.5rem 1.25rem 6rem; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  /* Card de produto */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+  }
+  .card-img {
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    background: var(--terra-light);
+    position: relative;
+  }
+  .badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--badge-bg);
+    color: var(--badge-color);
+    border: 1px solid #E8C4A8;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 0.72rem;
+    font-weight: 500;
+  }
+  .badge.novo { background: #EBF5EA; color: #2D6A3F; border-color: #A8D9A0; }
+  .card-body { padding: 1rem; flex: 1; display: flex; flex-direction: column; }
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .card-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    flex: 1;
+    margin-bottom: 0.8rem;
+  }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-price {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--terra);
+  }
+  .add-btn {
+    background: var(--terra);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    width: 30px; height: 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, transform 0.1s;
+    flex-shrink: 0;
+  }
+  .add-btn:hover { background: var(--terra-dark); }
+  .add-btn:active { transform: scale(0.92); }
+  .card.esgotado { opacity: 0.55; pointer-events: none; }
+  .card.esgotado .add-btn { background: var(--border); }
+
+  /* Drawer do carrinho */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .overlay.open { opacity: 1; pointer-events: all; }
+  .drawer {
+    position: fixed;
+    right: 0; top: 0; bottom: 0;
+    width: 340px;
+    max-width: 95vw;
+    background: var(--white);
+    z-index: 21;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-header {
+    padding: 1.2rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .drawer-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+  }
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    line-height: 1;
+    padding: 4px;
+  }
+  .drawer-items { flex: 1; overflow-y: auto; padding: 1rem 1.25rem; }
+  .drawer-empty {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    padding: 3rem 0;
+  }
+  .drawer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    gap: 0.5rem;
+  }
+  .drawer-item-info { flex: 1; min-width: 0; }
+  .drawer-item-name { font-size: 0.9rem; font-weight: 500; }
+  .drawer-item-price { font-size: 0.8rem; color: var(--terra); margin-top: 2px; }
+  .qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .qty-btn {
+    background: var(--areia);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    width: 26px; height: 26px;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text);
+  }
+  .qty-num { font-size: 0.9rem; font-weight: 500; min-width: 16px; text-align: center; }
+  .drawer-footer {
+    padding: 1.2rem 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  .btn-checkout {
+    width: 100%;
+    background: var(--terra);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-checkout:hover { background: var(--terra-dark); }
+  .btn-checkout:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--text);
+    color: #fff;
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: transform 0.3s ease;
+    z-index: 99;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <div class="logo">Raízes do Nordeste</div>
+    <nav class="nav-links">
+      <a class="nav-link active" href="cardapio.html">🍽 Cardápio</a>
+      <a class="nav-link" href="fidelidade.html">⭐ Fidelidade</a>
+      <a class="nav-link" href="index.html">Sair</a>
+    </nav>
+    <button class="cart-btn" onclick="toggleDrawer()">
+      🛒 Carrinho
+      <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <h2>Cardápio do dia</h2>
+    <p>Horário de funcionamento: 06h às 14h · Pedidos antecipados disponíveis</p>
+  </div>
+</div>
+
+<!-- Filtros de categoria -->
+<div class="filters">
+  <div class="filters-inner">
+    <button class="filter-btn active" onclick="filtrar('todos', this)">Todos</button>
+    <button class="filter-btn" onclick="filtrar('tapioca', this)">Tapiocas</button>
+    <button class="filter-btn" onclick="filtrar('cuscuz', this)">Cuscuz</button>
+    <button class="filter-btn" onclick="filtrar('bolo', this)">Bolos</button>
+    <button class="filter-btn" onclick="filtrar('bebida', this)">Bebidas</button>
+    <button class="filter-btn" onclick="filtrar('cafe', this)">Café da manhã</button>
+  </div>
+</div>
+
+<!-- Conteúdo principal -->
+<main>
+  <div id="produtos-container"></div>
+</main>
+
+<!-- Overlay + Drawer carrinho -->
+<div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h3>Seu pedido</h3>
+    <button class="close-btn" onclick="toggleDrawer()" aria-label="Fechar carrinho">✕</button>
+  </div>
+  <div class="drawer-items" id="drawer-items">
+    <p class="drawer-empty">Nenhum item adicionado ainda.</p>
+  </div>
+  <div class="drawer-footer">
+    <div class="total-row">
+      <span>Total</span>
+      <span id="total-price">R$ 0,00</span>
+    </div>
+    <button class="btn-checkout" id="btn-checkout" onclick="irParaPagamento()" disabled>Ir para pagamento</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // === MOCK DATA ===
+  const produtos = [
+    { id:1, nome:'Tapioca Nordestina', desc:'Tapioca com manteiga de garrafa, queijo coalho e carne seca.', emoji:'🫓', preco:14.90, cat:'tapioca', badge:'Mais pedida' },
+    { id:2, nome:'Tapioca de Coco', desc:'Tapioca recheada com coco ralado fresco e leite condensado.', emoji:'🥥', preco:12.50, cat:'tapioca', badge:'novo' },
+    { id:3, nome:'Tapioca de Frango', desc:'Tapioca com frango desfiado temperado e ervas frescas.', emoji:'🍗', preco:13.90, cat:'tapioca', badge:'' },
+    { id:4, nome:'Cuscuz com Ovo', desc:'Cuscuz nordestino com ovo mexido e manteiga de garrafa.', emoji:'🌽', preco:11.00, cat:'cuscuz', badge:'' },
+    { id:5, nome:'Cuscuz Recheado', desc:'Cuscuz com carne seca desfiada, queijo e pimenta biquinho.', emoji:'🍱', preco:16.50, cat:'cuscuz', badge:'Mais pedida' },
+    { id:6, nome:'Bolo de Macaxeira', desc:'Bolo úmido de macaxeira com calda de coco. Fatia generosa.', emoji:'🍰', preco:8.00, cat:'bolo', badge:'' },
+    { id:7, nome:'Bolo de Rolo', desc:'Tradicional bolo de rolo pernambucano com goiabada cremosa.', emoji:'🎂', preco:9.50, cat:'bolo', badge:'Junho' },
+    { id:8, nome:'Café Passado', desc:'Café coado na hora com grãos selecionados do sertão.', emoji:'☕', preco:6.00, cat:'cafe', badge:'' },
+    { id:9, nome:'Suco de Umbú', desc:'Suco natural de umbú, fruta típica do sertão nordestino.', emoji:'🥤', preco:9.00, cat:'bebida', badge:'Safra' },
+    { id:10, nome:'Suco de Cajá', desc:'Suco natural de cajá fresquinho, puro e gelado.', emoji:'🍹', preco:8.50, cat:'bebida', badge:'' },
+    { id:11, nome:'Café da Manhã Completo', desc:'Café + tapioca nordestina + bolo de macaxeira. O melhor do dia.', emoji:'🌄', preco:28.90, cat:'cafe', badge:'Combo', esgotado: false },
+    { id:12, nome:'Beiju de Coco', desc:'Beiju crocante com coco fresco. Somente aos fins de semana.', emoji:'🫔', preco:10.00, cat:'tapioca', badge:'Fim de sem.', esgotado: true }
+  ];
+
+  let carrinho = [];
+  let categoriaAtual = 'todos';
+
+  function formatPreco(v) {
+    return 'R$ ' + v.toFixed(2).replace('.',',');
+  }
+
+  function filtrar(cat, btn) {
+    categoriaAtual = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderProdutos();
+  }
+
+  function renderProdutos() {
+    const lista = categoriaAtual === 'todos' ? produtos : produtos.filter(p => p.cat === categoriaAtual);
+    const container = document.getElementById('produtos-container');
+
+    if (lista.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:3rem 0">Nenhum produto nesta categoria.</p>';
+      return;
+    }
+
+    container.innerHTML = `
+      <h2 class="section-title">${categoriaAtual === 'todos' ? 'Todos os itens' : lista[0].cat.charAt(0).toUpperCase() + lista[0].cat.slice(1)}</h2>
+      <div class="grid">
+        ${lista.map(p => `
+          <div class="card${p.esgotado ? ' esgotado' : ''}" role="article" aria-label="${p.nome}">
+            <div class="card-img">
+              <span role="img" aria-hidden="true">${p.emoji}</span>
+              ${p.badge ? `<span class="badge${p.badge === 'novo' ? ' novo' : ''}">${p.esgotado ? 'Esgotado' : p.badge}</span>` : ''}
+              ${p.esgotado && !p.badge ? '<span class="badge">Esgotado</span>' : ''}
+            </div>
+            <div class="card-body">
+              <div class="card-name">${p.nome}</div>
+              <div class="card-desc">${p.desc}</div>
+              <div class="card-footer">
+                <div class="card-price">${formatPreco(p.preco)}</div>
+                <button class="add-btn" onclick="addCarrinho(${p.id})" aria-label="Adicionar ${p.nome} ao carrinho" ${p.esgotado ? 'disabled' : ''}>+</button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function addCarrinho(id) {
+    const prod = produtos.find(p => p.id === id);
+    const existente = carrinho.find(i => i.id === id);
+    if (existente) {
+      existente.qty++;
+    } else {
+      carrinho.push({ ...prod, qty: 1 });
+    }
+    updateCartUI();
+    showToast(`${prod.nome} adicionado! 🛒`);
+  }
+
+  function updateQty(id, delta) {
+    const idx = carrinho.findIndex(i => i.id === id);
+    if (idx === -1) return;
+    carrinho[idx].qty += delta;
+    if (carrinho[idx].qty <= 0) carrinho.splice(idx, 1);
+    updateCartUI();
+    renderDrawer();
+  }
+
+  function updateCartUI() {
+    const total = carrinho.reduce((s, i) => s + i.qty, 0);
+    document.getElementById('cart-count').textContent = total;
+    renderDrawer();
+  }
+
+  function renderDrawer() {
+    const container = document.getElementById('drawer-items');
+    const totalVal  = carrinho.reduce((s, i) => s + i.preco * i.qty, 0);
+    document.getElementById('total-price').textContent = formatPreco(totalVal);
+    document.getElementById('btn-checkout').disabled = carrinho.length === 0;
+
+    if (carrinho.length === 0) {
+      container.innerHTML = '<p class="drawer-empty">Nenhum item adicionado ainda.</p>';
+      return;
+    }
+    container.innerHTML = carrinho.map(i => `
+      <div class="drawer-item">
+        <div class="drawer-item-info">
+          <div class="drawer-item-name">${i.emoji} ${i.nome}</div>
+          <div class="drawer-item-price">${formatPreco(i.preco * i.qty)}</div>
+        </div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="updateQty(${i.id},-1)" aria-label="Remover um ${i.nome}">−</button>
+          <span class="qty-num">${i.qty}</span>
+          <button class="qty-btn" onclick="updateQty(${i.id},1)" aria-label="Adicionar mais um ${i.nome}">+</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggleDrawer() {
+    document.getElementById('drawer').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('open');
+  }
+
+  function irParaPagamento() {
+    localStorage.setItem('pedido', JSON.stringify(carrinho));
+    showToast('Redirecionando para pagamento…');
+    setTimeout(() => window.location.href = 'pagamento.html', 1400);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // Inicia renderização
+  renderProdutos();
+</script>
+</body>
+</html>

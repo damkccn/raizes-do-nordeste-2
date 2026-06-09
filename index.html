@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raízes do Nordeste — Entrar</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --terra: #C4622D;
+    --terra-dark: #9E4A1E;
+    --terra-light: #F0D9CC;
+    --areia: #F5EFE6;
+    --text: #1A1208;
+    --text-muted: #6B5744;
+    --border: #D9C4B0;
+    --white: #FFFDF9;
+    --error: #B33A1A;
+    --success: #2D6A3F;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background-color: var(--areia);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    display: flex;
+    align-items: stretch;
+  }
+
+  /* Painel esquerdo decorativo */
+  .panel-left {
+    display: none;
+    width: 42%;
+    background: var(--terra);
+    position: relative;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 3rem;
+  }
+  @media(min-width: 900px){ .panel-left { display: flex; } }
+
+  .panel-left::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 80%, rgba(255,255,255,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(0,0,0,0.15) 0%, transparent 50%);
+  }
+  .pattern {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 100%;
+    opacity: 0.07;
+    background-image:
+      repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%);
+    background-size: 20px 20px;
+  }
+  .panel-left-content { position: relative; z-index: 1; }
+  .brand-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .brand-mark span {
+    display: block;
+    font-size: 1rem;
+    font-weight: 300;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 0.5rem;
+  }
+  .tagline {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    max-width: 300px;
+  }
+  .deco-dots {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    gap: 8px;
+  }
+  .deco-dots span {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+  }
+
+  /* Painel direito - formulário */
+  .panel-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+  }
+  .form-card {
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 420px;
+    animation: fadeUp 0.5s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 0.75rem 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn.active {
+    color: var(--terra);
+    border-bottom-color: var(--terra);
+  }
+
+  /* Mobile brand */
+  .mobile-brand {
+    text-align: center;
+    margin-bottom: 1.8rem;
+  }
+  .mobile-brand h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    color: var(--terra);
+  }
+  .mobile-brand p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  @media(min-width: 900px){ .mobile-brand { display: none; } }
+
+  /* Form fields */
+  .field { margin-bottom: 1.2rem; }
+  .field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .field input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--areia);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .field input:focus {
+    border-color: var(--terra);
+    box-shadow: 0 0 0 3px rgba(196,98,45,0.12);
+    background: var(--white);
+  }
+  .field input.error { border-color: var(--error); }
+  .field .msg {
+    font-size: 0.78rem;
+    margin-top: 0.35rem;
+    color: var(--error);
+    display: none;
+  }
+  .field input.error + .msg { display: block; }
+
+  /* LGPD box */
+  .lgpd-box {
+    background: #FFF8F4;
+    border: 1px solid #E8C4A8;
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1.4rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .lgpd-box strong { color: var(--text); font-weight: 500; }
+  .lgpd-box a { color: var(--terra); text-decoration: underline; }
+  .lgpd-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+  }
+  .lgpd-check input[type="checkbox"] {
+    width: 16px; height: 16px;
+    margin-top: 2px;
+    accent-color: var(--terra);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .lgpd-check label {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1.5;
+  }
+  .lgpd-check label span { color: var(--terra); }
+
+  /* Botão principal */
+  .btn-primary {
+    width: 100%;
+    background: var(--terra);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { background: var(--terra-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled {
+    background: var(--border);
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+
+  /* Divisor */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 1.2rem 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Forgot / link */
+  .link-btn {
+    background: none;
+    border: none;
+    color: var(--terra);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+  }
+  .forgot-row {
+    text-align: right;
+    margin-top: -0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Formulário cadastro */
+  #form-cadastro { display: none; }
+
+  /* Toast de sucesso */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--success);
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: transform 0.35s ease;
+    z-index: 99;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- Painel esquerdo decorativo (desktop) -->
+<div class="panel-left">
+  <div class="pattern"></div>
+  <div class="deco-dots">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="panel-left-content">
+    <div class="brand-mark">
+      <span>Bem-vindo à</span>
+      Raízes do<br>Nordeste
+    </div>
+    <p class="tagline">Culinária nordestina com sabor de tradição, na velocidade do seu dia a dia. Tapioca, cuscuz e muito mais — perto de você.</p>
+  </div>
+</div>
+
+<!-- Painel direito - formulário -->
+<div class="panel-right">
+  <div class="form-card">
+
+    <div class="mobile-brand">
+      <h1>Raízes do Nordeste</h1>
+      <p>Culinária nordestina</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" id="tab-login" role="tab" aria-selected="true" onclick="switchTab('login')">Entrar</button>
+      <button class="tab-btn" id="tab-cadastro" role="tab" aria-selected="false" onclick="switchTab('cadastro')">Criar conta</button>
+    </div>
+
+    <!-- Formulário Login -->
+    <form id="form-login" novalidate onsubmit="submitLogin(event)">
+      <div class="field">
+        <label for="login-email">E-mail</label>
+        <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
+        <span class="msg">Informe um e-mail válido.</span>
+      </div>
+      <div class="field">
+        <label for="login-senha">Senha</label>
+        <input type="password" id="login-senha" placeholder="••••••••" autocomplete="current-password">
+        <span class="msg">A senha deve ter ao menos 6 caracteres.</span>
+      </div>
+      <div class="forgot-row">
+        <button type="button" class="link-btn">Esqueci minha senha</button>
+      </div>
+      <button type="submit" class="btn-primary">Entrar</button>
+      <div class="divider">ou</div>
+      <p style="text-align:center;font-size:0.85rem;color:var(--text-muted)">
+        Não tem conta? <button type="button" class="link-btn" onclick="switchTab('cadastro')">Criar conta gratuita</button>
+      </p>
+    </form>
+
+    <!-- Formulário Cadastro -->
+    <form id="form-cadastro" novalidate onsubmit="submitCadastro(event)">
+      <div class="field">
+        <label for="cad-nome">Nome completo</label>
+        <input type="text" id="cad-nome" placeholder="Seu nome" autocomplete="name">
+        <span class="msg">Informe seu nome.</span>
+      </div>
+      <div class="field">
+        <label for="cad-email">E-mail</label>
+        <input type="email" id="cad-email" placeholder="seu@email.com" autocomplete="email">
+        <span class="msg">Informe um e-mail válido.</span>
+      </div>
+      <div class="field">
+        <label for="cad-senha">Senha</label>
+        <input type="password" id="cad-senha" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+        <span class="msg">A senha deve ter ao menos 6 caracteres.</span>
+      </div>
+
+      <!-- LGPD / Consentimento -->
+      <div class="lgpd-box" role="region" aria-label="Informações de privacidade LGPD">
+        <strong>Seus dados e a LGPD</strong><br>
+        Coletamos seu nome e e-mail para criar sua conta e personalizar sua experiência. Seus dados não serão vendidos a terceiros. Você pode solicitar exclusão a qualquer momento. Leia nossa <a href="#" onclick="return false">Política de Privacidade</a>.
+        <div class="lgpd-check">
+          <input type="checkbox" id="lgpd-consent" required>
+          <label for="lgpd-consent">Li e concordo com o uso dos meus dados conforme a <span>Lei 13.709/2018 (LGPD)</span>.</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary" id="btn-cadastrar">Criar conta</button>
+      <div class="divider">ou</div>
+      <p style="text-align:center;font-size:0.85rem;color:var(--text-muted)">
+        Já tem conta? <button type="button" class="link-btn" onclick="switchTab('login')">Entrar</button>
+      </p>
+    </form>
+
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+    document.getElementById('form-login').style.display = isLogin ? 'block' : 'none';
+    document.getElementById('form-cadastro').style.display = isLogin ? 'none' : 'block';
+    document.getElementById('tab-login').classList.toggle('active', isLogin);
+    document.getElementById('tab-cadastro').classList.toggle('active', !isLogin);
+    document.getElementById('tab-login').setAttribute('aria-selected', isLogin);
+    document.getElementById('tab-cadastro').setAttribute('aria-selected', !isLogin);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+  function submitLogin(e) {
+    e.preventDefault();
+    const emailEl = document.getElementById('login-email');
+    const senhaEl = document.getElementById('login-senha');
+    let ok = true;
+    emailEl.classList.toggle('error', !validateEmail(emailEl.value));
+    if (!validateEmail(emailEl.value)) ok = false;
+    senhaEl.classList.toggle('error', senhaEl.value.length < 6);
+    if (senhaEl.value.length < 6) ok = false;
+    if (ok) {
+      showToast('Login realizado com sucesso! Redirecionando…');
+      setTimeout(() => window.location.href = 'cardapio.html', 1800);
+    }
+  }
+
+  function submitCadastro(e) {
+    e.preventDefault();
+    const nomeEl  = document.getElementById('cad-nome');
+    const emailEl = document.getElementById('cad-email');
+    const senhaEl = document.getElementById('cad-senha');
+    const lgpd    = document.getElementById('lgpd-consent');
+    let ok = true;
+    nomeEl.classList.toggle('error',  nomeEl.value.trim().length < 2);
+    emailEl.classList.toggle('error', !validateEmail(emailEl.value));
+    senhaEl.classList.toggle('error', senhaEl.value.length < 6);
+    if (nomeEl.value.trim().length < 2)  ok = false;
+    if (!validateEmail(emailEl.value))   ok = false;
+    if (senhaEl.value.length < 6)        ok = false;
+    if (!lgpd.checked) {
+      alert('Você precisa aceitar os termos da LGPD para continuar.');
+      ok = false;
+    }
+    if (ok) {
+      showToast('Conta criada! Seja bem-vindo(a)!');
+      setTimeout(() => window.location.href = 'cardapio.html', 1800);
+    }
+  }
+</script>
+</body>
+</html>
+<!-- Navegação já ok: vai para cardapio.html após login/cadastro -->

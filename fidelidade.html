@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raízes do Nordeste — Fidelidade</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --terra: #C4622D; --terra-dark: #9E4A1E; --terra-light: #F5EAE0;
+    --areia: #F5EFE6; --text: #1A1208; --text-muted: #6B5744;
+    --border: #D9C4B0; --white: #FFFDF9;
+    --gold: #B8860B; --gold-bg: #FDF6E3; --gold-border: #E8D48A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--areia); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
+
+  header {
+    background: var(--white); border-bottom: 1px solid var(--border);
+    padding: 0 1.25rem; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--terra); font-weight: 700; }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-link {
+    background: none; border: none; padding: 6px 12px; border-radius: 6px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.83rem; color: var(--text-muted);
+    cursor: pointer; transition: background 0.15s, color 0.15s;
+  }
+  .nav-link:hover { background: var(--areia); color: var(--terra); }
+
+  .page-wrap { max-width: 640px; margin: 2rem auto; padding: 0 1.25rem 4rem; display: flex; flex-direction: column; gap: 1.2rem; }
+
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+
+  /* Hero saldo */
+  .saldo-hero {
+    background: var(--terra); color: #fff; border-radius: 16px;
+    padding: 2rem 1.5rem; position: relative; overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .saldo-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%);
+    background-size: 20px 20px; opacity: 0.05;
+  }
+  .saldo-hero-content { position: relative; }
+  .saldo-label { font-size: 0.8rem; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+  .saldo-valor { font-family: 'Playfair Display', serif; font-size: 3.2rem; font-weight: 700; line-height: 1; }
+  .saldo-unidade { font-size: 1rem; opacity: 0.8; margin-left: 4px; }
+  .saldo-info { font-size: 0.82rem; opacity: 0.75; margin-top: 0.8rem; }
+  .nivel-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.18); border-radius: 20px;
+    padding: 4px 12px; font-size: 0.8rem; font-weight: 500; margin-top: 1rem;
+  }
+
+  /* Barra de progresso */
+  .progresso-section { margin-top: 1.4rem; }
+  .prog-header { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.5rem; }
+  .prog-header span:first-child { opacity: 0.8; }
+  .prog-header span:last-child { font-weight: 500; }
+  .prog-track {
+    height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden;
+  }
+  .prog-fill {
+    height: 100%; background: rgba(255,255,255,0.85); border-radius: 4px;
+    transition: width 1s ease; width: 0%;
+  }
+  .prog-label { font-size: 0.78rem; opacity: 0.7; margin-top: 0.5rem; }
+
+  /* Recompensas */
+  .recompensas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  @media(min-width:480px) { .recompensas-grid { grid-template-columns: repeat(3, 1fr); } }
+  .recompensa-card {
+    border: 1px solid var(--border); border-radius: 10px; padding: 1rem;
+    text-align: center; transition: border-color 0.2s, transform 0.15s;
+    cursor: pointer;
+  }
+  .recompensa-card:hover { border-color: var(--terra); transform: translateY(-2px); }
+  .recompensa-card.bloqueado { opacity: 0.45; cursor: not-allowed; }
+  .recompensa-card.bloqueado:hover { border-color: var(--border); transform: none; }
+  .recomp-emoji { font-size: 2rem; margin-bottom: 0.5rem; }
+  .recomp-nome { font-size: 0.85rem; font-weight: 500; margin-bottom: 4px; }
+  .recomp-pts { font-size: 0.78rem; color: var(--terra); font-weight: 500; }
+  .recomp-pts.bloqueado-pts { color: var(--text-muted); }
+  .resgate-badge {
+    display: inline-block; background: var(--terra); color: #fff;
+    border-radius: 4px; padding: 2px 8px; font-size: 0.72rem; margin-top: 6px;
+  }
+  .bloqueado-badge {
+    display: inline-block; background: var(--border); color: var(--text-muted);
+    border-radius: 4px; padding: 2px 8px; font-size: 0.72rem; margin-top: 6px;
+  }
+
+  /* Histórico */
+  .historico-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.7rem 0; border-bottom: 1px solid var(--border); gap: 0.5rem;
+  }
+  .historico-item:last-child { border-bottom: none; }
+  .hist-info { flex: 1; min-width: 0; }
+  .hist-desc { font-size: 0.88rem; font-weight: 500; }
+  .hist-data { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+  .hist-pts { font-size: 0.9rem; font-weight: 500; white-space: nowrap; }
+  .hist-pts.ganho { color: var(--success, #2D6A3F); }
+  .hist-pts.gasto { color: var(--terra); }
+
+  /* LGPD info */
+  .lgpd-info {
+    background: #FFF8F4; border: 1px solid #E8C4A8; border-radius: 10px;
+    padding: 1rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;
+    display: flex; gap: 10px;
+  }
+  .lgpd-info .icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .lgpd-link { color: var(--terra); text-decoration: underline; cursor: pointer; }
+
+  /* Promoções */
+  .promo-card {
+    background: var(--gold-bg); border: 1px solid var(--gold-border); border-radius: 10px;
+    padding: 1rem 1.1rem; display: flex; gap: 12px; align-items: center;
+    margin-bottom: 0.7rem;
+  }
+  .promo-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .promo-titulo { font-size: 0.9rem; font-weight: 500; color: var(--gold); }
+  .promo-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+  .promo-validade { font-size: 0.75rem; color: var(--gold); margin-top: 4px; }
+
+  /* Modal de resgate */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 50;
+    display: none; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--white); border-radius: 14px; padding: 1.5rem;
+    max-width: 360px; width: 100%; animation: popIn 0.25s ease;
+  }
+  @keyframes popIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 0.8rem; }
+  .modal p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.2rem; }
+  .modal-btns { display: flex; gap: 0.7rem; }
+  .modal-confirm {
+    flex: 1; background: var(--terra); color: #fff; border: none;
+    border-radius: 8px; padding: 0.75rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background 0.2s;
+  }
+  .modal-confirm:hover { background: var(--terra-dark); }
+  .modal-cancel {
+    flex: 1; background: none; border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.75rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; color: var(--text-muted); cursor: pointer; transition: border-color 0.2s;
+  }
+  .modal-cancel:hover { border-color: var(--terra); color: var(--terra); }
+
+  .toast {
+    position: fixed; bottom: 1.5rem; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--text); color: #fff; padding: 0.7rem 1.4rem;
+    border-radius: 8px; font-size: 0.88rem; font-weight: 500;
+    transition: transform 0.3s ease; z-index: 99; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Raízes do Nordeste</div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="window.location.href='cardapio.html'">Cardápio</button>
+    <button class="nav-link" onclick="window.location.href='index.html'">Sair</button>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+  <!-- Hero saldo -->
+  <div class="saldo-hero">
+    <div class="saldo-hero-content">
+      <div class="saldo-label">Seu saldo de pontos</div>
+      <div>
+        <span class="saldo-valor" id="saldo-pontos">342</span>
+        <span class="saldo-unidade">pts</span>
+      </div>
+      <div class="saldo-info">Equivale a <strong id="saldo-reais">R$ 3,42</strong> em desconto</div>
+      <div class="nivel-badge">🥉 Nível Prata — <span id="pts-proximo">158 pts para Ouro</span></div>
+
+      <!-- Barra de progresso para próximo nível -->
+      <div class="progresso-section">
+        <div class="prog-header">
+          <span>Progresso para nível Ouro</span>
+          <span id="prog-pct">68%</span>
+        </div>
+        <div class="prog-track">
+          <div class="prog-fill" id="prog-fill"></div>
+        </div>
+        <div class="prog-label">Acumule mais <span id="prog-falta">158 pontos</span> para desbloquear benefícios exclusivos</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Promoções em destaque -->
+  <div class="card">
+    <div class="card-title">🔥 Promoções exclusivas para você</div>
+    <div class="promo-card">
+      <div class="promo-icon">🌵</div>
+      <div>
+        <div class="promo-titulo">Semana do Nordeste — dobro de pontos!</div>
+        <div class="promo-desc">Todos os pedidos desta semana valem 2× pontos.</div>
+        <div class="promo-validade">Válido até 07/06/2026</div>
+      </div>
+    </div>
+    <div class="promo-card">
+      <div class="promo-icon">☕</div>
+      <div>
+        <div class="promo-titulo">Café gratuito no aniversário</div>
+        <div class="promo-desc">No seu mês de aniversário, ganhe um café passado grátis.</div>
+        <div class="promo-validade">Cadastre sua data de nascimento para ativar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recompensas disponíveis -->
+  <div class="card">
+    <div class="card-title">Resgatar recompensas</div>
+    <div class="recompensas-grid">
+      <div class="recompensa-card" onclick="abrirModal('Café grátis', 80)">
+        <div class="recomp-emoji">☕</div>
+        <div class="recomp-nome">Café grátis</div>
+        <div class="recomp-pts">80 pts</div>
+        <span class="resgate-badge">Resgatar</span>
+      </div>
+      <div class="recompensa-card" onclick="abrirModal('Beiju grátis', 150)">
+        <div class="recomp-emoji">🫔</div>
+        <div class="recomp-nome">Beiju grátis</div>
+        <div class="recomp-pts">150 pts</div>
+        <span class="resgate-badge">Resgatar</span>
+      </div>
+      <div class="recompensa-card" onclick="abrirModal('10% desconto', 200)">
+        <div class="recomp-emoji">🏷</div>
+        <div class="recomp-nome">10% desconto</div>
+        <div class="recomp-pts">200 pts</div>
+        <span class="resgate-badge">Resgatar</span>
+      </div>
+      <div class="recompensa-card bloqueado">
+        <div class="recomp-emoji">🍱</div>
+        <div class="recomp-nome">Cuscuz grátis</div>
+        <div class="recomp-pts bloqueado-pts">400 pts</div>
+        <span class="bloqueado-badge">🔒 Nível Ouro</span>
+      </div>
+      <div class="recompensa-card bloqueado">
+        <div class="recomp-emoji">🎂</div>
+        <div class="recomp-nome">Bolo do mês</div>
+        <div class="recomp-pts bloqueado-pts">500 pts</div>
+        <span class="bloqueado-badge">🔒 Nível Ouro</span>
+      </div>
+      <div class="recompensa-card bloqueado">
+        <div class="recomp-emoji">👑</div>
+        <div class="recomp-nome">Kit Nordeste</div>
+        <div class="recomp-pts bloqueado-pts">1000 pts</div>
+        <span class="bloqueado-badge">🔒 Nível Ouro</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Histórico -->
+  <div class="card">
+    <div class="card-title">Histórico de pontos</div>
+    <div id="historico-lista">
+      <div class="historico-item">
+        <div class="hist-info">
+          <div class="hist-desc">Pedido RN47821 — Boa Viagem</div>
+          <div class="hist-data">02/06/2026 · 08:14</div>
+        </div>
+        <div class="hist-pts ganho">+28 pts</div>
+      </div>
+      <div class="historico-item">
+        <div class="hist-info">
+          <div class="hist-desc">Resgate — Café grátis</div>
+          <div class="hist-data">28/05/2026 · 07:52</div>
+        </div>
+        <div class="hist-pts gasto">−80 pts</div>
+      </div>
+      <div class="historico-item">
+        <div class="hist-info">
+          <div class="hist-desc">Pedido RN46990 — Boa Viagem</div>
+          <div class="hist-data">25/05/2026 · 09:01</div>
+        </div>
+        <div class="hist-pts ganho">+29 pts</div>
+      </div>
+      <div class="historico-item">
+        <div class="hist-info">
+          <div class="hist-desc">Bônus de boas-vindas</div>
+          <div class="hist-data">10/05/2026</div>
+        </div>
+        <div class="hist-pts ganho">+50 pts</div>
+      </div>
+      <div class="historico-item">
+        <div class="hist-info">
+          <div class="hist-desc">Pedido RN45200 — Boa Viagem</div>
+          <div class="hist-data">05/05/2026 · 08:30</div>
+        </div>
+        <div class="hist-pts ganho">+315 pts</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LGPD -->
+  <div class="lgpd-info">
+    <span class="icon">🔒</span>
+    <span>Seus dados de fidelização (histórico, pontos, perfil) são usados exclusivamente para personalizar sua experiência, conforme você autorizou no cadastro (LGPD — Lei 13.709/2018). Para revogar o consentimento ou solicitar exclusão dos dados, <span class="lgpd-link" onclick="alert('Funcionalidade em desenvolvimento. Entre em contato pelo SAC.')">clique aqui</span>.</span>
+  </div>
+
+</div>
+
+<!-- Modal de resgate -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h3 id="modal-titulo">Resgatar recompensa</h3>
+    <p id="modal-desc">Deseja confirmar o resgate desta recompensa?</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="modal-confirm" onclick="confirmarResgate()">Confirmar resgate</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let pontos = 342;
+  let recompensaAtual = null;
+
+  // Carrega pontos do último pedido
+  const confirmado = localStorage.getItem('pedidoConfirmado');
+  if (confirmado) {
+    const p = JSON.parse(confirmado);
+    const itens = p.itens || [];
+    const total = itens.reduce((s, i) => s + i.preco * i.qty, 0);
+    pontos += Math.floor(total);
+  }
+  document.getElementById('saldo-pontos').textContent = pontos;
+  document.getElementById('saldo-reais').textContent = 'R$ ' + (pontos * 0.01).toFixed(2).replace('.',',');
+
+  const meta = 500;
+  const pct = Math.min(Math.round((pontos / meta) * 100), 100);
+  const falta = Math.max(meta - pontos, 0);
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-falta').textContent = falta + ' pontos';
+  document.getElementById('pts-proximo').textContent = falta > 0 ? falta + ' pts para Ouro' : 'Nível Ouro atingido!';
+  setTimeout(() => { document.getElementById('prog-fill').style.width = pct + '%'; }, 200);
+
+  function abrirModal(nome, custo) {
+    if (pontos < custo) { showToast('Pontos insuficientes para este resgate.'); return; }
+    recompensaAtual = { nome, custo };
+    document.getElementById('modal-titulo').textContent = 'Resgatar: ' + nome;
+    document.getElementById('modal-desc').textContent = 'Serão descontados ' + custo + ' pontos do seu saldo (' + pontos + ' pts disponíveis). Deseja confirmar?';
+    document.getElementById('modal-overlay').classList.add('show');
+  }
+
+  function fecharModal() {
+    document.getElementById('modal-overlay').classList.remove('show');
+    recompensaAtual = null;
+  }
+
+  function confirmarResgate() {
+    if (!recompensaAtual) return;
+    pontos -= recompensaAtual.custo;
+    document.getElementById('saldo-pontos').textContent = pontos;
+    document.getElementById('saldo-reais').textContent = 'R$ ' + (pontos * 0.01).toFixed(2).replace('.',',');
+    fecharModal();
+    showToast('Recompensa "' + recompensaAtual.nome + '" resgatada! 🎉');
+    recompensaAtual = null;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

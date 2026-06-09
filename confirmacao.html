@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raízes do Nordeste — Pedido Confirmado</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --terra: #C4622D; --terra-dark: #9E4A1E; --terra-light: #F5EAE0;
+    --areia: #F5EFE6; --text: #1A1208; --text-muted: #6B5744;
+    --border: #D9C4B0; --white: #FFFDF9;
+    --success: #2D6A3F; --success-bg: #EBF5EA; --success-border: #A8D9A0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--areia); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
+
+  header { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 1.25rem; height: 60px; display: flex; align-items: center; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--terra); font-weight: 700; }
+
+  .page-wrap { max-width: 560px; margin: 2.5rem auto; padding: 0 1.25rem 4rem; }
+
+  /* Bloco de sucesso */
+  .success-block {
+    background: var(--white); border: 1px solid var(--border); border-radius: 16px;
+    overflow: hidden; margin-bottom: 1.2rem;
+    animation: fadeUp 0.5s ease both;
+  }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+  .success-header {
+    background: var(--success); color: #fff;
+    padding: 2rem 1.5rem; text-align: center;
+  }
+  .check-circle {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; margin: 0 auto 1rem;
+    animation: popIn 0.5s 0.2s ease both;
+  }
+  @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+  .success-header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.3rem; }
+  .success-header p { font-size: 0.88rem; opacity: 0.85; }
+
+  /* Código do pedido */
+  .codigo-block {
+    padding: 1.5rem; border-bottom: 1px solid var(--border); text-align: center;
+  }
+  .codigo-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .codigo-valor {
+    font-family: 'Playfair Display', serif; font-size: 2rem;
+    color: var(--terra); font-weight: 700; letter-spacing: 0.08em;
+  }
+  .codigo-instrucao { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.4rem; }
+
+  /* Status tracker */
+  .status-section { padding: 1.5rem; border-bottom: 1px solid var(--border); }
+  .status-title { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1.2rem; }
+  .status-track { display: flex; flex-direction: column; gap: 0; }
+  .status-step {
+    display: flex; gap: 1rem; align-items: flex-start; position: relative;
+  }
+  .status-step:not(:last-child)::after {
+    content: ''; position: absolute; left: 15px; top: 32px;
+    width: 2px; height: calc(100% + 4px); background: var(--border);
+    z-index: 0;
+  }
+  .status-step.done::after { background: var(--success); }
+  .status-dot {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; position: relative; z-index: 1;
+    background: var(--border); color: var(--text-muted); transition: background 0.4s;
+  }
+  .status-step.done .status-dot { background: var(--success); color: #fff; }
+  .status-step.active .status-dot { background: var(--terra); color: #fff; }
+  .status-step.active .status-dot::after {
+    content: ''; position: absolute; inset: -4px;
+    border-radius: 50%; border: 2px solid var(--terra); opacity: 0.4;
+    animation: pulse 1.4s ease infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:0.4} 50%{transform:scale(1.2);opacity:0} }
+  .status-info { padding: 4px 0 20px; }
+  .status-name { font-size: 0.9rem; font-weight: 500; }
+  .status-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+  /* Itens do pedido */
+  .itens-section { padding: 1.5rem; border-bottom: 1px solid var(--border); }
+  .section-label { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.8rem; }
+  .item-row { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.88rem; }
+  .item-price { color: var(--terra); font-weight: 500; }
+  .total-row { display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--border); font-weight: 500; }
+  .total-row span:last-child { color: var(--terra); }
+
+  /* Pontos ganhos */
+  .pontos-section {
+    padding: 1.2rem 1.5rem;
+    background: var(--success-bg); border-bottom: 1px solid var(--success-border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .pontos-icon { font-size: 1.8rem; flex-shrink: 0; }
+  .pontos-texto strong { font-size: 0.95rem; color: var(--success); display: block; }
+  .pontos-texto span { font-size: 0.8rem; color: #3a7a4a; }
+
+  /* Ações */
+  .actions { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.7rem; }
+  .btn-primary {
+    width: 100%; background: var(--terra); color: #fff; border: none;
+    border-radius: 8px; padding: 0.9rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--terra-dark); }
+  .btn-outline {
+    width: 100%; background: none; color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; cursor: pointer; transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--terra); color: var(--terra); }
+
+  /* Info unidade */
+  .unidade-card {
+    background: var(--white); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.2rem 1.5rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Raízes do Nordeste</div>
+</header>
+
+<div class="page-wrap">
+
+  <div class="success-block">
+    <!-- Cabeçalho verde -->
+    <div class="success-header">
+      <div class="check-circle">✓</div>
+      <h1>Pedido confirmado!</h1>
+      <p>Pagamento aprovado · <span id="hora-pedido">--:--</span></p>
+    </div>
+
+    <!-- Código -->
+    <div class="codigo-block">
+      <div class="codigo-label">Código do pedido</div>
+      <div class="codigo-valor" id="codigo-pedido">—</div>
+      <div class="codigo-instrucao">Mostre este código no balcão para retirar seu pedido</div>
+    </div>
+
+    <!-- Status tracker -->
+    <div class="status-section">
+      <div class="status-title">Acompanhamento em tempo real</div>
+      <div class="status-track">
+        <div class="status-step done" id="st-confirmado">
+          <div class="status-dot">✓</div>
+          <div class="status-info">
+            <div class="status-name">Pedido confirmado</div>
+            <div class="status-sub">Pagamento aprovado pelo gateway externo</div>
+          </div>
+        </div>
+        <div class="status-step active" id="st-preparo">
+          <div class="status-dot">🍳</div>
+          <div class="status-info">
+            <div class="status-name">Em preparo</div>
+            <div class="status-sub">A cozinha já recebeu seu pedido</div>
+          </div>
+        </div>
+        <div class="status-step" id="st-pronto">
+          <div class="status-dot">🛎</div>
+          <div class="status-info">
+            <div class="status-name">Pronto para retirada</div>
+            <div class="status-sub">Você será notificado quando estiver pronto</div>
+          </div>
+        </div>
+        <div class="status-step" id="st-retirado">
+          <div class="status-dot">🏁</div>
+          <div class="status-info">
+            <div class="status-name">Retirado</div>
+            <div class="status-sub">Bom apetite!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Itens -->
+    <div class="itens-section">
+      <div class="section-label">Itens do pedido</div>
+      <div id="itens-lista"></div>
+      <div class="total-row"><span>Total pago</span><span id="total-pago">R$ 0,00</span></div>
+    </div>
+
+    <!-- Pontos -->
+    <div class="pontos-section">
+      <div class="pontos-icon">⭐</div>
+      <div class="pontos-texto">
+        <strong>+<span id="pontos-valor">0</span> pontos adicionados!</strong>
+        <span>Acesse a tela de fidelidade para ver seu saldo e resgatar recompensas.</span>
+      </div>
+    </div>
+
+    <!-- Ações -->
+    <div class="actions">
+      <button class="btn-primary" onclick="window.location.href='fidelidade.html'">Ver meus pontos de fidelidade ⭐</button>
+      <button class="btn-outline" onclick="window.location.href='cardapio.html'">Fazer novo pedido</button>
+    </div>
+  </div>
+
+  <!-- Info unidade -->
+  <div class="unidade-card">
+    📍 <strong>Unidade Boa Viagem — Recife</strong><br>
+    Av. Boa Viagem, 1420 · Recife/PE<br>
+    ⏱ Tempo estimado de preparo: <strong>10–15 min</strong><br>
+    📞 (81) 3000-0000
+  </div>
+
+</div>
+
+<script>
+  function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.',','); }
+
+  function carregarConfirmacao() {
+    const raw = localStorage.getItem('pedidoConfirmado');
+    if (!raw) {
+      document.getElementById('codigo-pedido').textContent = 'RN00000';
+      document.getElementById('hora-pedido').textContent = '--:--';
+      return;
+    }
+    const p = JSON.parse(raw);
+    document.getElementById('codigo-pedido').textContent = p.codigo || 'RN00000';
+    document.getElementById('hora-pedido').textContent = p.hora || '--:--';
+
+    let total = 0;
+    const lista = document.getElementById('itens-lista');
+    if (p.itens && p.itens.length) {
+      lista.innerHTML = p.itens.map(i => {
+        const sub = i.preco * i.qty; total += sub;
+        return `<div class="item-row"><span>${i.emoji} ${i.nome} × ${i.qty}</span><span class="item-price">${fmt(sub)}</span></div>`;
+      }).join('');
+    } else {
+      lista.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">Dados do pedido não disponíveis.</p>';
+    }
+    document.getElementById('total-pago').textContent = fmt(total);
+    document.getElementById('pontos-valor').textContent = Math.floor(total);
+  }
+
+  // Simula progressão de status
+  function simularStatus() {
+    setTimeout(() => {
+      document.getElementById('st-preparo').classList.remove('active');
+      document.getElementById('st-preparo').classList.add('done');
+      document.getElementById('st-preparo').querySelector('.status-dot').textContent = '✓';
+      document.getElementById('st-pronto').classList.add('active');
+    }, 8000);
+    setTimeout(() => {
+      document.getElementById('st-pronto').classList.remove('active');
+      document.getElementById('st-pronto').classList.add('done');
+      document.getElementById('st-pronto').querySelector('.status-dot').textContent = '✓';
+      document.getElementById('st-retirado').classList.add('active');
+    }, 18000);
+  }
+
+  carregarConfirmacao();
+  simularStatus();
+</script>
+</body>
+</html>

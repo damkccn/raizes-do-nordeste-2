@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raízes do Nordeste — Pagamento</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --terra: #C4622D; --terra-dark: #9E4A1E; --terra-light: #F5EAE0;
+    --areia: #F5EFE6; --text: #1A1208; --text-muted: #6B5744;
+    --border: #D9C4B0; --white: #FFFDF9;
+    --success: #2D6A3F; --error: #B33A1A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--areia); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
+
+  header {
+    background: var(--white); border-bottom: 1px solid var(--border);
+    padding: 0 1.25rem; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--terra); font-weight: 700; }
+  .back-btn {
+    background: none; border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+    color: var(--text-muted); cursor: pointer; transition: border-color 0.2s;
+  }
+  .back-btn:hover { border-color: var(--terra); color: var(--terra); }
+
+  .page-wrap {
+    max-width: 720px; margin: 2rem auto; padding: 0 1.25rem 4rem;
+    display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+  }
+  @media(min-width: 680px) { .page-wrap { grid-template-columns: 1fr 300px; } }
+
+  .steps { display: flex; align-items: center; margin-bottom: 0.5rem; grid-column: 1 / -1; }
+  .step { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); }
+  .step-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--border); color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 700; flex-shrink: 0; transition: background 0.3s, color 0.3s;
+  }
+  .step.active .step-num { background: var(--terra); color: #fff; }
+  .step.active { color: var(--terra); }
+  .step.done .step-num { background: var(--success); color: #fff; }
+  .step-line { flex: 1; height: 1px; background: var(--border); margin: 0 8px; }
+
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+  .card-title {
+    font-family: 'Playfair Display', serif; font-size: 1.1rem;
+    margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border);
+  }
+
+  .order-item {
+    display: flex; justify-content: space-between; padding: 0.5rem 0;
+    font-size: 0.88rem; border-bottom: 1px solid var(--border); gap: 0.5rem;
+  }
+  .order-item:last-of-type { border-bottom: none; }
+  .order-item-price { color: var(--terra); font-weight: 500; white-space: nowrap; }
+  .order-total {
+    display: flex; justify-content: space-between; margin-top: 0.8rem;
+    padding-top: 0.8rem; border-top: 2px solid var(--border); font-weight: 500; font-size: 1rem;
+  }
+  .order-total span:last-child { color: var(--terra); }
+  .pontos-badge {
+    background: #EBF5EA; border: 1px solid #A8D9A0; border-radius: 8px;
+    padding: 0.6rem 0.9rem; font-size: 0.82rem; color: #2D6A3F; margin-top: 0.8rem;
+  }
+
+  .methods { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.2rem; }
+  .method-opt {
+    display: flex; align-items: center; gap: 12px;
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 0.9rem 1rem; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  }
+  .method-opt:hover { border-color: var(--terra); background: #FFF8F4; }
+  .method-opt input[type="radio"] { accent-color: var(--terra); width: 16px; height: 16px; flex-shrink: 0; }
+  .method-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .method-label { font-size: 0.9rem; font-weight: 500; }
+  .method-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 1px; }
+  .method-opt.selected { border-color: var(--terra); background: #FFF8F4; }
+
+  .card-fields { display: none; flex-direction: column; gap: 0.9rem; margin-bottom: 1.2rem; }
+  .card-fields.visible { display: flex; }
+  .field label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .field input {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.7rem 0.9rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; color: var(--text); background: var(--areia);
+    transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+  }
+  .field input:focus { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(196,98,45,0.12); background: var(--white); }
+  .field input.error { border-color: var(--error); }
+  .field .errmsg { font-size: 0.76rem; color: var(--error); margin-top: 0.3rem; display: none; }
+  .field input.error + .errmsg { display: block; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+  .gateway-notice {
+    background: #FFF8F4; border: 1px solid #E8C4A8; border-radius: 10px;
+    padding: 0.9rem 1rem; margin-bottom: 1.2rem;
+    font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .gateway-notice .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+  .btn-pay {
+    width: 100%; background: var(--terra); color: #fff; border: none;
+    border-radius: 8px; padding: 0.95rem; font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.1s;
+  }
+  .btn-pay:hover { background: var(--terra-dark); }
+  .btn-pay:active { transform: scale(0.98); }
+  .btn-pay:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
+  .secure-note { text-align: center; font-size: 0.77rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+  .processing-overlay {
+    position: fixed; inset: 0; background: rgba(26,18,8,0.65);
+    z-index: 50; display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 1.2rem;
+  }
+  .processing-overlay.show { display: flex; }
+  .spinner {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: 4px solid rgba(255,255,255,0.2); border-top-color: #fff;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .processing-text { color: #fff; font-size: 1rem; font-weight: 500; }
+  .processing-sub { color: rgba(255,255,255,0.65); font-size: 0.82rem; text-align: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Raízes do Nordeste</div>
+  <button class="back-btn" onclick="history.back()">← Voltar ao cardápio</button>
+</header>
+
+<div class="page-wrap">
+  <div class="steps">
+    <div class="step done"><div class="step-num">✓</div><span>Cardápio</span></div>
+    <div class="step-line"></div>
+    <div class="step active"><div class="step-num">2</div><span>Pagamento</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-num">3</div><span>Confirmação</span></div>
+  </div>
+
+  <!-- Formulário -->
+  <div>
+    <div class="card">
+      <div class="card-title">Forma de pagamento</div>
+      <div class="methods">
+        <label class="method-opt selected" id="opt-credito">
+          <input type="radio" name="metodo" value="credito" checked onchange="selecionarMetodo('credito')">
+          <span class="method-icon">💳</span>
+          <div><div class="method-label">Cartão de crédito</div><div class="method-sub">Visa, Mastercard, Elo, Amex</div></div>
+        </label>
+        <label class="method-opt" id="opt-debito">
+          <input type="radio" name="metodo" value="debito" onchange="selecionarMetodo('debito')">
+          <span class="method-icon">🏦</span>
+          <div><div class="method-label">Cartão de débito</div><div class="method-sub">Processamento imediato</div></div>
+        </label>
+        <label class="method-opt" id="opt-pix">
+          <input type="radio" name="metodo" value="pix" onchange="selecionarMetodo('pix')">
+          <span class="method-icon">⚡</span>
+          <div><div class="method-label">Pix</div><div class="method-sub">Aprovação instantânea</div></div>
+        </label>
+      </div>
+
+      <div class="card-fields visible" id="campos-cartao">
+        <div class="field">
+          <label for="num-cartao">Número do cartão</label>
+          <input type="text" id="num-cartao" placeholder="0000 0000 0000 0000" maxlength="19" oninput="mascaraCartao(this)">
+          <span class="errmsg">Número de cartão inválido.</span>
+        </div>
+        <div class="field">
+          <label for="nome-cartao">Nome no cartão</label>
+          <input type="text" id="nome-cartao" placeholder="Como aparece no cartão">
+          <span class="errmsg">Informe o nome completo.</span>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="validade">Validade</label>
+            <input type="text" id="validade" placeholder="MM/AA" maxlength="5" oninput="mascaraValidade(this)">
+            <span class="errmsg">Validade inválida.</span>
+          </div>
+          <div class="field">
+            <label for="cvv">CVV</label>
+            <input type="text" id="cvv" placeholder="123" maxlength="4">
+            <span class="errmsg">CVV inválido.</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="pix-info" style="display:none; margin-bottom:1.2rem;">
+        <div class="gateway-notice">
+          <span class="icon">⚡</span>
+          <span>Após confirmar, um QR Code Pix será gerado pelo serviço externo de pagamento. O pedido é confirmado assim que o pagamento for identificado.</span>
+        </div>
+      </div>
+
+      <div class="gateway-notice">
+        <span class="icon">🔒</span>
+        <span>O pagamento é processado com segurança por um <strong>serviço externo especializado</strong>. A Raízes do Nordeste não armazena dados de cartão. Você receberá a confirmação assim que o retorno for recebido.</span>
+      </div>
+
+      <button class="btn-pay" id="btn-pagar" onclick="iniciarPagamento()">Confirmar pagamento</button>
+      <p class="secure-note">🔐 Ambiente seguro · Dados criptografados · LGPD</p>
+    </div>
+  </div>
+
+  <!-- Resumo -->
+  <div>
+    <div class="card">
+      <div class="card-title">Resumo do pedido</div>
+      <div id="resumo-itens"></div>
+      <div class="order-total"><span>Total</span><span id="resumo-total">R$ 0,00</span></div>
+      <div class="pontos-badge">⭐ Você ganhará <strong id="pontos-ganhar">0 pontos</strong> com este pedido!</div>
+    </div>
+    <div class="card" style="margin-top:1rem;">
+      <div class="card-title">Retirada</div>
+      <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.7">
+        📍 <strong style="color:var(--text)">Boa Viagem — Recife</strong><br>
+        Av. Boa Viagem, 1420<br><br>
+        ⏱ Tempo estimado: <strong style="color:var(--text)">10–15 min</strong><br>
+        🏷 Retire no balcão com o código do pedido.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="processing-overlay" id="processing">
+  <div class="spinner"></div>
+  <div class="processing-text" id="proc-text">Solicitando ao serviço de pagamento…</div>
+  <div class="processing-sub" id="proc-sub">Aguarde. Não feche esta página.</div>
+</div>
+
+<script>
+  function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.',','); }
+
+  function carregarResumo() {
+    const raw = localStorage.getItem('pedido');
+    const itens = raw ? JSON.parse(raw) : [];
+    const container = document.getElementById('resumo-itens');
+    if (!itens.length) {
+      container.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">Sem itens. <a href="cardapio.html" style="color:var(--terra)">Voltar ao cardápio</a></p>';
+      document.getElementById('btn-pagar').disabled = true;
+      return;
+    }
+    let total = 0;
+    container.innerHTML = itens.map(i => {
+      const sub = i.preco * i.qty; total += sub;
+      return `<div class="order-item"><span>${i.emoji} ${i.nome} × ${i.qty}</span><span class="order-item-price">${fmt(sub)}</span></div>`;
+    }).join('');
+    document.getElementById('resumo-total').textContent = fmt(total);
+    document.getElementById('pontos-ganhar').textContent = Math.floor(total) + ' pontos';
+  }
+
+  function selecionarMetodo(m) {
+    document.querySelectorAll('.method-opt').forEach(el => el.classList.remove('selected'));
+    document.getElementById('opt-' + m).classList.add('selected');
+    document.getElementById('campos-cartao').classList.toggle('visible', m !== 'pix');
+    document.getElementById('pix-info').style.display = m === 'pix' ? 'block' : 'none';
+  }
+
+  function mascaraCartao(el) {
+    let v = el.value.replace(/\D/g,'').substring(0,16);
+    el.value = v.replace(/(.{4})/g,'$1 ').trim();
+  }
+  function mascaraValidade(el) {
+    let v = el.value.replace(/\D/g,'').substring(0,4);
+    if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2);
+    el.value = v;
+  }
+
+  function validarCampos() {
+    const metodo = document.querySelector('input[name="metodo"]:checked').value;
+    if (metodo === 'pix') return true;
+    const num = document.getElementById('num-cartao');
+    const nome = document.getElementById('nome-cartao');
+    const val = document.getElementById('validade');
+    const cvv = document.getElementById('cvv');
+    let ok = true;
+    const numOk = num.value.replace(/\s/g,'').length === 16;
+    num.classList.toggle('error', !numOk); if (!numOk) ok = false;
+    const nomeOk = nome.value.trim().length > 2;
+    nome.classList.toggle('error', !nomeOk); if (!nomeOk) ok = false;
+    const valOk = /^\d{2}\/\d{2}$/.test(val.value);
+    val.classList.toggle('error', !valOk); if (!valOk) ok = false;
+    const cvvOk = /^\d{3,4}$/.test(cvv.value);
+    cvv.classList.toggle('error', !cvvOk); if (!cvvOk) ok = false;
+    return ok;
+  }
+
+  function iniciarPagamento() {
+    if (!validarCampos()) return;
+    const metodo = document.querySelector('input[name="metodo"]:checked').value;
+    const overlay = document.getElementById('processing');
+    overlay.classList.add('show');
+    document.getElementById('proc-text').textContent = 'Solicitando ao serviço de pagamento…';
+    document.getElementById('proc-sub').textContent = 'Aguarde. Não feche esta página.';
+    setTimeout(() => { document.getElementById('proc-text').textContent = 'Aguardando retorno do gateway…'; }, 1500);
+    setTimeout(() => { document.getElementById('proc-text').textContent = 'Pagamento aprovado! ✓'; document.getElementById('proc-sub').textContent = 'Redirecionando…'; }, 3200);
+    setTimeout(() => {
+      const pedido = {
+        itens: JSON.parse(localStorage.getItem('pedido') || '[]'),
+        metodo, codigo: 'RN' + Math.floor(10000 + Math.random() * 90000),
+        hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}),
+        status: 'confirmado'
+      };
+      localStorage.setItem('pedidoConfirmado', JSON.stringify(pedido));
+      window.location.href = 'confirmacao.html';
+    }, 4200);
+  }
+
+  carregarResumo();
+</script>
+</body>
+</html>
