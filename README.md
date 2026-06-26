@@ -6,7 +6,7 @@ A ideia principal foi construir uma interface única que muda de comportamento d
 
 ---
 
-## ☕ O que foi desenvolvido
+## O que foi desenvolvido?
 
 * **Identidade por Filial:** Logo na entrada, o usuário escolhe a unidade mais próxima (Recreio, Centro ou Campo Grande) para que sua experiência seja personalizada.
 * **Cardápio Afetivo e Dinâmico:** Os pratos não são fixos. Pensando na correria de quem trabalha, a unidade do Centro, por exemplo, foca em opções mais rápidas para o almoço comercial. Alguns itens também mudam de disponibilidade para garantir o frescor dos ingredientes de cada cozinha.
@@ -17,7 +17,7 @@ A ideia principal foi construir uma interface única que muda de comportamento d
 
 ---
 
-## 🛠️ Tecnologias e Capricho na Organização
+## Tecnologias e Cuidado na Organização
 
 Para que o site ficasse leve e rápido, optei por não usar frameworks prontos. Desenvolvi tudo usando a tríade clássica do Front-end, com bastante capricho na separação dos arquivos para deixar o código limpo e fácil de manter:
 
