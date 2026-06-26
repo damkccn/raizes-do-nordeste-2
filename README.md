@@ -27,7 +27,8 @@ Para que o site ficasse leve e rápido, optei por não usar frameworks prontos. 
 
 ### Estrutura das pastas:
 
-mraizes-do-nordeste/
+```text
+raizes-do-nordeste/
 │
 ├── css/
 │   ├── index.css
