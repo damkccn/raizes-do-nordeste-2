@@ -21,27 +21,26 @@ function carregarConfirmacao() {
   const localizacaoCard = document.querySelector('.unidade-card');
   
   if(unAtiva === 'campo-grande') {
-    document.getElementById('instrucao-retirada-dinamica').textContent = "Seu pedido foi encaminhado para a rota de entrega residencial";
+    document.getElementById('instrucao-retirada-dinamica').textContent = "Rota de entrega iniciada";
     document.getElementById('nome-status-pronto').textContent = "Saiu para entrega";
-    document.getElementById('sub-status-pronto').textContent = "O entregador já coletou os pratos e está a caminho";
+    document.getElementById('sub-status-pronto').textContent = "O motoqueiro está a caminho";
     document.getElementById('dot-pronto').textContent = "🛵";
     document.getElementById('nome-status-final').textContent = "Entregue";
 
     localizacaoCard.innerHTML = `
       <h3>🛵 Destino de Envio</h3>
       <p style="margin-top:0.5rem; font-size:0.9rem; color:var(--text-muted); line-height:1.5;">
-        <strong>Endereço informado:</strong> ${p.enderecoEntrega || 'Não capturado'}<br>
-        <strong>Origem Logística:</strong> Hub Central Campo Grande<br>
-        <strong>Previsão de Chegada:</strong> ~40 min
+        <strong>Endereço:</strong> ${p.enderecoEntrega || 'Não capturado'}<br>
+        <strong>Origem:</strong> Hub Campo Grande
       </p>
     `;
   } else {
-    document.getElementById('instrucao-retirada-dinamica').textContent = "Mostre este código no balcão para retirar seu pedido";
-    const enderecosConfirmacao = {
-      'recreio': '📍 <strong>Unidade Recreio — RJ</strong><br>Av. Lúcio Costa, 12000 · Rio de Janeiro/RJ<br>⏱ Pedido disponível para retirada rápida ou Totem.',
-      'centro': '📍 <strong>Unidade Centro — RJ</strong><br>Av. Rio Branco, 500 · Rio de Janeiro/RJ<br>⏱ Pedido disponível para retirada rápida ou Totem.'
+    document.getElementById('instrucao-retirada-dinamica').textContent = "Mostre o código no balcão";
+    const mapas = {
+      'recreio': '📍 <strong>Unidade Recreio — RJ</strong><br>Av. Lúcio Costa, 12000 · Rio de Janeiro/RJ<br>⏱ Retirada balcão / Totem.',
+      'centro': '📍 <strong>Unidade Centro — RJ</strong><br>Av. Rio Branco, 500 · Rio de Janeiro/RJ<br>⏱ Retirada balcão / Totem.'
     };
-    localizacaoCard.innerHTML = enderecosConfirmacao[unAtiva];
+    localizacaoCard.innerHTML = mapas[unAtiva];
   }
 }
 
@@ -61,6 +60,5 @@ function simularStatus() {
   }, 12000);
 }
 
-// Executa as rotinas de renderização
 carregarConfirmacao();
 simularStatus();
