@@ -27,21 +27,22 @@ Para que o site ficasse leve e rápido, optei por não usar frameworks prontos. 
 
 ### Estrutura das pastas:
 
-meu-projeto/
+mraizes-do-nordeste/
 │
-├── css/                  # Estilos visuais isolados com cuidado
+├── css/
 │   ├── index.css
 │   ├── cardapio.css
 │   ├── pagamento.css
 │   └── fidelidade.css
 │
-├── js/                   # Lógica e comportamento do sistema
-│   ├── auth.js           # Cadastro, login e validação de privacidade
-│   ├── cardapio.js       # Vitrine de produtos e controle do carrinho
-│   ├── pagamento.js      # Fechamento do pedido e dados de entrega
-│   └── fidelidade.js     # Soma de pontuação e resgate de brindes
+├── js/
+│   ├── auth.js
+│   ├── cardapio.js
+│   ├── pagamento.js
+│   └── fidelidade.js
 │
-├── index.html            # Tela de boas-vindas e acesso
-├── cardapio.html         # Exibição dos pratos do dia
-├── pagamento.html        # Checkout e escolha de pagamento
-└── confirmacao.html      # Sucesso do pedido e rastreamento
+├── index.html
+├── cardapio.html
+├── pagamento.html
+├── confirmacao.html
+└── fidelidade.html
