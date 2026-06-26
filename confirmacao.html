@@ -5,53 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Raízes do Nordeste — Pedido Confirmado</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --terra: #C4622D; --terra-dark: #9E4A1E; --terra-light: #F5EAE0;
-    --areia: #F5EFE6; --text: #1A1208; --text-muted: #6B5744;
-    --border: #D9C4B0; --white: #FFFDF9;
-    --success: #2D6A3F; --success-bg: #EBF5EA; --success-border: #A8D9A0;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--areia); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
 
-  header { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 1.25rem; height: 60px; display: flex; align-items: center; }
-  .logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--terra); font-weight: 700; }
-  .page-wrap { max-width: 560px; margin: 2.5rem auto; padding: 0 1.25rem 4rem; }
-
-  .success-block { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 1.2rem; }
-  .success-header { background: var(--success); color: #fff; padding: 2rem 1.5rem; text-align: center; }
-  .check-circle { width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem; }
-  .success-header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.3rem; }
-
-  .codigo-block { padding: 1.5rem; border-bottom: 1px solid var(--border); text-align: center; }
-  .codigo-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; }
-  .codigo-valor { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--terra); font-weight: 700; }
-  .codigo-instrucao { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.4rem; }
-
-  .status-section { padding: 1.5rem; border-bottom: 1px solid var(--border); }
-  .status-title { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); text-transform: uppercase; margin-bottom: 1.2rem; }
-  .status-track { display: flex; flex-direction: column; }
-  .status-step { display: flex; gap: 1rem; align-items: flex-start; position: relative; }
-  .status-step:not(:last-child)::after { content: ''; position: absolute; left: 15px; top: 32px; width: 2px; height: calc(100% + 4px); background: var(--border); }
-  .status-step.done::after { background: var(--success); }
-  .status-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; background: var(--border); color: var(--text-muted); }
-  .status-step.done .status-dot { background: var(--success); color: #fff; }
-  .status-step.active .status-dot { background: var(--terra); color: #fff; }
-  .status-info { padding: 4px 0 20px; }
-  .status-name { font-size: 0.9rem; font-weight: 500; }
-  .status-sub { font-size: 0.8rem; color: var(--text-muted); }
-
-  .itens-section { padding: 1.5rem; border-bottom: 1px solid var(--border); }
-  .item-row { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.88rem; }
-  .total-row { display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--border); font-weight: 500; }
-
-  .pontos-section { padding: 1.2rem 1.5rem; background: var(--success-bg); border-bottom: 1px solid var(--success-border); display: flex; align-items: center; gap: 12px; }
-  .actions { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.7rem; }
-  .btn-primary { width: 100%; background: var(--terra); color: #fff; border: none; border-radius: 8px; padding: 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; cursor: pointer; }
-  .btn-outline { width: 100%; background: none; color: var(--text-muted); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem; cursor: pointer; }
-  .unidade-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem 1.5rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
-</style>
+<link rel="stylesheet" href="css/confirmacao.css">
 </head>
 <body>
 
@@ -112,72 +67,6 @@
   <div class="unidade-card"></div>
 </div>
 
-<script>
-  const unAtiva = localStorage.getItem('unidadeSelecionada') || 'recreio';
-  
-  function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.',','); }
-
-  function carregarConfirmacao() {
-    const raw = localStorage.getItem('pedidoConfirmado');
-    if (!raw) return;
-    const p = JSON.parse(raw);
-    document.getElementById('codigo-pedido').textContent = p.codigo;
-    document.getElementById('hora-pedido').textContent = p.hora;
-
-    let total = 0;
-    document.getElementById('itens-lista').innerHTML = p.itens.map(i => {
-      total += (i.preco * i.qty);
-      return `<div class="item-row"><span>${i.emoji} ${i.nome} × ${i.qty}</span><span>${fmt(i.preco * i.qty)}</span></div>`;
-    }).join('');
-    
-    document.getElementById('total-pago').textContent = fmt(total);
-    document.getElementById('pontos-valor').textContent = Math.floor(total);
-
-    const localizacaoCard = document.querySelector('.unidade-card');
-    
-    if(unAtiva === 'campo-grande') {
-      document.getElementById('instrucao-retirada-dinamica').textContent = "Seu pedido foi encaminhado para a rota de entrega residencial";
-      document.getElementById('nome-status-pronto').textContent = "Saiu para entrega";
-      document.getElementById('sub-status-pronto').textContent = "O entregador já coletou os pratos e está a caminho";
-      document.getElementById('dot-pronto').textContent = "🛵";
-      document.getElementById('nome-status-final').textContent = "Entregue";
-
-      localizacaoCard.innerHTML = `
-        <h3>🛵 Destino de Envio</h3>
-        <p style="margin-top:0.5rem; font-size:0.9rem; color:var(--text-muted); line-height:1.5;">
-          <strong>Endereço informado:</strong> ${p.enderecoEntrega || 'Não capturado'}<br>
-          <strong>Origem Logística:</strong> Hub Central Campo Grande<br>
-          <strong>Previsão de Chegada:</strong> ~40 min
-        </p>
-      `;
-    } else {
-      document.getElementById('instrucao-retirada-dinamica').textContent = "Mostre este código no balcão para retirar seu pedido";
-      const enderecosConfirmacao = {
-        'recreio': '📍 <strong>Unidade Recreio — RJ</strong><br>Av. Lúcio Costa, 12000 · Rio de Janeiro/RJ<br>⏱ Pedido disponível para retirada rápida ou Totem.',
-        'centro': '📍 <strong>Unidade Centro — RJ</strong><br>Av. Rio Branco, 500 · Rio de Janeiro/RJ<br>⏱ Pedido disponível para retirada rápida ou Totem.'
-      };
-      localizacaoCard.innerHTML = enderecosConfirmacao[unAtiva];
-    }
-  }
-
-  function simularStatus() {
-    setTimeout(() => {
-      document.getElementById('st-preparo').classList.remove('active');
-      document.getElementById('st-preparo').classList.add('done');
-      document.getElementById('st-preparo').querySelector('.status-dot').textContent = '✓';
-      document.getElementById('st-pronto').classList.add('active');
-    }, 5000);
-
-    setTimeout(() => {
-      document.getElementById('st-pronto').classList.remove('active');
-      document.getElementById('st-pronto').classList.add('done');
-      document.getElementById('st-pronto').querySelector('.status-dot').textContent = '✓';
-      document.getElementById('st-retirado').classList.add('active');
-    }, 12000);
-  }
-
-  carregarConfirmacao();
-  simularStatus();
-</script>
+<script src="js/confirmacao.js"></script>
 </body>
 </html>
