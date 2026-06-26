@@ -5,57 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Raízes do Nordeste — Pagamento</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --terra: #C4622D; --terra-dark: #9E4A1E; --terra-light: #F5EAE0;
-    --areia: #F5EFE6; --text: #1A1208; --text-muted: #6B5744;
-    --border: #D9C4B0; --white: #FFFDF9; --success: #2D6A3F; --error: #B33A1A;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--areia); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
 
-  header { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 1.25rem; height: 60px; display: flex; align-items: center; justify-content: space-between; }
-  .logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--terra); font-weight: 700; }
-  .back-btn { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; }
-
-  .page-wrap { max-width: 720px; margin: 2rem auto; padding: 0 1.25rem 4rem; display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-  @media(min-width: 680px) { .page-wrap { grid-template-columns: 1fr 300px; } }
-
-  .steps { display: flex; align-items: center; margin-bottom: 0.5rem; grid-column: 1 / -1; }
-  .step { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); }
-  .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--border); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; }
-  .step.active .step-num { background: var(--terra); color: #fff; }
-  .step.active { color: var(--terra); }
-  .step.done .step-num { background: var(--success); color: #fff; }
-  .step-line { flex: 1; height: 1px; background: var(--border); margin: 0 8px; }
-
-  .card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
-  .card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
-
-  .order-item { display: flex; justify-content: space-between; padding: 0.5rem 0; font-size: 0.88rem; border-bottom: 1px solid var(--border); gap: 0.5rem; }
-  .order-item:last-of-type { border-bottom: none; }
-  .order-total { display: flex; justify-content: space-between; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 2px solid var(--border); font-weight: 500; font-size: 1rem; }
-  .order-total span:last-child { color: var(--terra); }
-  .pontos-badge { background: #EBF5EA; border: 1px solid #A8D9A0; border-radius: 8px; padding: 0.6rem 0.9rem; font-size: 0.82rem; color: #2D6A3F; margin-top: 0.8rem; }
-
-  .methods { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.2rem; }
-  .method-opt { display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; cursor: pointer; }
-  .method-opt input type="radio" { accent-color: var(--terra); }
-  .method-opt.selected { border-color: var(--terra); background: #FFF8F4; }
-
-  .card-fields { display: none; flex-direction: column; gap: 0.9rem; margin-bottom: 1.2rem; }
-  .card-fields.visible { display: flex; }
-  .field label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase; }
-  .field input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text); background: var(--areia); outline: none; }
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-
-  .gateway-notice { background: #FFF8F4; border: 1px solid #E8C4A8; border-radius: 10px; padding: 0.9rem 1rem; margin-bottom: 1.2rem; font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 10px; }
-  .btn-pay { width: 100%; background: var(--terra); color: #fff; border: none; border-radius: 8px; padding: 0.95rem; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; }
-  .processing-overlay { position: fixed; inset: 0; background: rgba(26,18,8,0.65); z-index: 50; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 1.2rem; }
-  .processing-overlay.show { display: flex; }
-  .spinner { width: 52px; height: 52px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.2); border-top-color: #fff; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-</style>
+<link rel="stylesheet" href="css/pagamento.css">
 </head>
 <body>
 
@@ -100,7 +51,9 @@
         </div>
       </div>
 
-      <div id="pix-info" style="display:none; margin-bottom:1.2rem;"><div class="gateway-notice"><span>⚡ O código Pix expira em 5 minutos após a emissão secundária.</span></div></div>
+      <div id="pix-info" style="display:none; margin-bottom:1.2rem;">
+        <div class="gateway-notice"><span>⚡ O código Pix expira em 5 minutos após a emissão secundária.</span></div>
+      </div>
       <button class="btn-pay" id="btn-pagar" onclick="iniciarPagamento()">Confirmar pagamento</button>
     </div>
   </div>
@@ -132,76 +85,8 @@
   </div>
 </div>
 
-<div class="processing-overlay" id="processing"><div class="spinner"></div><div style="color:#fff;">Processando...</div></div>
+<div class="processing-overlay" id="processing"><div class="spinner"></div><div style="color:#fff;">Processando transação externa...</div></div>
 
-<script>
-  function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.',','); }
-
-  function carregarResumo() {
-    const raw = localStorage.getItem('pedido');
-    const itens = raw ? JSON.parse(raw) : [];
-    const container = document.getElementById('resumo-itens');
-    if (!itens.length) { container.innerHTML = '<p>Vazio</p>'; document.getElementById('btn-pagar').disabled = true; return; }
-    
-    let total = 0;
-    container.innerHTML = itens.map(i => { total += (i.preco * i.qty); return `<div class="order-item"><span>${i.emoji} ${i.nome} × ${i.qty}</span><span class="order-item-price">${fmt(i.preco * i.qty)}</span></div>`; }).join('');
-    document.getElementById('resumo-total').textContent = fmt(total);
-    document.getElementById('pontos-ganhar').textContent = Math.floor(total) + ' pontos';
-
-    const un = localStorage.getItem('unidadeSelecionada') || 'recreio';
-    const cardLogistica = document.getElementById('card-logistica-entrega');
-    const txtRetirada = document.getElementById('texto-logistica-retirada');
-    const formDelivery = document.getElementById('formulario-endereco-delivery');
-
-    if (un === 'campo-grande') {
-      cardLogistica.querySelector('.card-title').textContent = 'Endereço de Entrega 🛵';
-      txtRetirada.style.display = 'none'; formDelivery.style.display = 'flex';
-    } else {
-      cardLogistica.querySelector('.card-title').textContent = 'Forma de Entrega: Retirada';
-      formDelivery.style.display = 'none'; txtRetirada.style.display = 'block';
-      const mapas = {
-        'recreio': '📍 <strong>Unidade Recreio — RJ</strong><br>Av. Lúcio Costa, 12000<br><br>⏱ Preparo: 15–20 min<br>🏷 Retire no balcão.',
-        'centro': '📍 <strong>Unidade Centro — RJ</strong><br>Av. Rio Branco, 500<br><br>⏱ Preparo: 5–10 min<br>🏷 Retire no balcão.'
-      };
-      txtRetirada.innerHTML = mapas[un];
-    }
-  }
-
-  function selecionarMetodo(m) {
-    document.querySelectorAll('.method-opt').forEach(el => el.classList.remove('selected'));
-    document.getElementById('opt-' + m).classList.add('selected');
-    document.getElementById('campos-cartao').classList.toggle('visible', m !== 'pix');
-    document.getElementById('pix-info').style.display = m === 'pix' ? 'block' : 'none';
-  }
-  function mascaraCartao(el) { let v = el.value.replace(/\D/g,'').substring(0,16); el.value = v.replace(/(.{4})/g,'$1 ').trim(); }
-  function mascaraValidade(el) { let v = el.value.replace(/\D/g,'').substring(0,4); if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2); el.value = v; }
-
-  function iniciarPagamento() {
-    const un = localStorage.getItem('unidadeSelecionada') || 'recreio';
-    let strEndereco = 'Retirada solicitada presencialmente';
-
-    if (un === 'campo-grande') {
-      const r = document.getElementById('deliv-rua').value.trim();
-      const n = document.getElementById('deliv-num').value.trim();
-      const b = document.getElementById('deliv-bairro').value.trim();
-      if (!r || !n || !b) { alert('Atenção: Os campos Rua, Número e Bairro são obrigatórios para realizarmos o envio residencial.'); return; }
-      strEndereco = `${r}, nº ${n} - ${b}`;
-    }
-
-    document.getElementById('processing').classList.add('show');
-    setTimeout(() => {
-      const finalizado = {
-        itens: JSON.parse(localStorage.getItem('pedido') || '[]'),
-        codigo: 'RN' + Math.floor(10000 + Math.random() * 90000),
-        hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}),
-        enderecoEntrega: strEndereco
-      };
-      localStorage.setItem('pedidoConfirmado', JSON.stringify(finalizado));
-      window.location.href = 'confirmacao.html';
-    }, 2500);
-  }
-
-  carregarResumo();
-</script>
+<script src="js/pagamento.js"></script>
 </body>
 </html>
