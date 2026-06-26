@@ -1,16 +1,17 @@
-const dadosUnidades = {
+const lojas = {
   'recreio': { nome: 'Unidade Recreio', texto: 'Horário: 06h às 14h · Atendimento Presencial / Totem / Balcão', delivery: false },
-  'campo-grande': { nome: 'Unidade Campo Grande', texto: '🛵 AMBIENTE DIGITAL DELIVERY — Receba em casa com agilidade!', delivery: true },
+  'campo-grande': { nome: 'Unidade Campo Grande', texto: 'AMBIENTE DIGITAL DELIVERY — Receba em casa com agilidade', delivery: true },
   'centro': { nome: 'Unidade Centro', texto: 'Horário: 07h às 16h · Perfeito para retiradas expressas', delivery: false }
 };
 
-const unidadeAtual = localStorage.getItem('unidadeSelecionada') || 'recreio';
-const configUnidade = dadosUnidades[unidadeAtual];
+const unidade = localStorage.getItem('unidadeSelecionada') || 'recreio';
+const config = lojas[unidade];
 
-// Inicializa os textos do Banner (Hero)
-document.querySelector('.hero h2').textContent = configUnidade.nome;
-document.querySelector('.hero p').textContent = configUnidade.texto;
-if(configUnidade.delivery) { document.querySelector('.hero').style.background = '#8B4F1D'; }
+document.querySelector('.hero h2').textContent = config.nome;
+document.querySelector('.hero p').textContent = config.texto;
+if(config.delivery) { 
+  document.querySelector('.hero').style.background = '#8B4F1D'; 
+}
 
 const produtos = [
   { id:1, nome:'Tapioca Nordestina', desc:'Tapioca com manteiga de garrafa, queijo coalho e carne seca.', emoji:'🫓', preco:14.90, cat:'tapioca', badge:'Mais pedida', unidades:['recreio', 'campo-grande', 'centro'] },
@@ -28,29 +29,84 @@ const produtos = [
 ];
 
 let carrinho = [];
-let categoriaAtual = 'todos';
+let catAtual = 'todos';
 
 function formatPreco(v) { return 'R$ ' + v.toFixed(2).replace('.',','); }
 
+function toggleDrawer() { 
+  document.getElementById('drawer').classList.toggle('open'); 
+  document.getElementById('overlay').classList.toggle('open'); 
+}
+
+function irParaPagamento() { 
+  localStorage.setItem('pedido', JSON.stringify(carrinho)); 
+  window.location.href = 'pagamento.html'; 
+}
+
+function showToast(msg) { 
+  const t = document.getElementById('toast'); 
+  t.textContent = msg; t.classList.add('show'); 
+  setTimeout(() => t.classList.remove('show'), 2500); 
+}
+
 function filtrar(cat, btn) {
-  categoriaAtual = cat;
+  catAtual = cat;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active'); 
   renderProdutos();
 }
 
+function renderDrawer() {
+  const container = document.getElementById('drawer-items');
+  document.getElementById('total-price').textContent = formatPreco(carrinho.reduce((s, i) => s + i.preco * i.qty, 0));
+  document.getElementById('btn-checkout').disabled = carrinho.length === 0;
+
+  if (carrinho.length === 0) { container.innerHTML = '<p class="drawer-empty">Carrinho vazio.</p>'; return; }
+  container.innerHTML = carrinho.map(i => `
+    <div class="drawer-item">
+      <div class="drawer-item-info">
+        <div class="drawer-item-name">${i.emoji} ${i.nome}</div>
+        <div class="drawer-item-price">${formatPreco(i.preco * i.qty)}</div>
+      </div>
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="updateQty(${i.id},-1)">−</button>
+        <span class="qty-num">${i.qty}</span>
+        <button class="qty-btn" onclick="updateQty(${i.id},1)">+</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateQty(id, delta) {
+  const idx = carrinho.findIndex(i => i.id === id);
+  if (idx === -1) return;
+  carrinho[idx].qty += delta;
+  if (carrinho[idx].qty <= 0) carrinho.splice(idx, 1);
+  document.getElementById('cart-count').textContent = carrinho.reduce((s, i) => s + i.qty, 0);
+  renderDrawer();
+}
+
+function addCarrinho(id) {
+  const prod = produtos.find(p => p.id === id);
+  const existente = carrinho.find(i => i.id === id);
+  if (existente) { existente.qty++; } else { carrinho.push({ ...prod, qty: 1 }); }
+  document.getElementById('cart-count').textContent = carrinho.reduce((s, i) => s + i.qty, 0);
+  renderDrawer();
+  showToast(`${prod.nome} adicionado`);
+}
+
 function renderProdutos() {
-  let lista = produtos.filter(p => p.unidades.includes(unidadeAtual));
-  if (categoriaAtual !== 'todos') { lista = lista.filter(p => p.cat === categoriaAtual); }
+  let lista = produtos.filter(p => p.unidades.includes(unidade));
+  if (catAtual !== 'todos') { lista = lista.filter(p => p.cat === catAtual); }
   const container = document.getElementById('produtos-container');
 
   if (lista.length === 0) {
-    container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:3rem 0">Nenhum produto disponível nesta categoria.</p>';
+    container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:3rem 0">Sem produtos nesta categoria.</p>';
     return;
   }
 
   container.innerHTML = `
-    <h2 class="section-title">${categoriaAtual === 'todos' ? 'Todos os itens' : lista[0].cat.toUpperCase()}</h2>
+    <h2 class="section-title">${catAtual === 'todos' ? 'Todos os itens' : lista[0].cat.toUpperCase()}</h2>
     <div class="grid">
       ${lista.map(p => `
         <div class="card${p.esgotado ? ' esgotado' : ''}">
@@ -73,63 +129,4 @@ function renderProdutos() {
   `;
 }
 
-function addCarrinho(id) {
-  const prod = produtos.find(p => p.id === id);
-  const existente = carrinho.find(i => i.id === id);
-  if (existente) { existente.qty++; } else { carrinho.push({ ...prod, qty: 1 }); }
-  updateCartUI(); 
-  showToast(`${prod.nome} adicionado! 🛒`);
-}
-
-function updateQty(id, delta) {
-  const idx = carrinho.findIndex(i => i.id === id);
-  if (idx === -1) return;
-  carrinho[idx].qty += delta;
-  if (carrinho[idx].qty <= 0) carrinho.splice(idx, 1);
-  updateCartUI();
-}
-
-function updateCartUI() {
-  document.getElementById('cart-count').textContent = carrinho.reduce((s, i) => s + i.qty, 0);
-  renderDrawer();
-}
-
-function renderDrawer() {
-  const container = document.getElementById('drawer-items');
-  document.getElementById('total-price').textContent = formatPreco(carrinho.reduce((s, i) => s + i.preco * i.qty, 0));
-  document.getElementById('btn-checkout').disabled = carrinho.length === 0;
-
-  if (carrinho.length === 0) { container.innerHTML = '<p class="drawer-empty">Nenhum item adicionado ainda.</p>'; return; }
-  container.innerHTML = carrinho.map(i => `
-    <div class="drawer-item">
-      <div class="drawer-item-info">
-        <div class="drawer-item-name">${i.emoji} ${i.nome}</div>
-        <div class="drawer-item-price">${formatPreco(i.preco * i.qty)}</div>
-      </div>
-      <div class="qty-ctrl">
-        <button class="qty-btn" onclick="updateQty(${i.id},-1)">−</button>
-        <span class="qty-num">${i.qty}</span>
-        <button class="qty-btn" onclick="updateQty(${i.id},1)">+</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function toggleDrawer() { 
-  document.getElementById('drawer').classList.toggle('open'); 
-  document.getElementById('overlay').classList.toggle('open'); 
-}
-
-function irParaPagamento() { 
-  localStorage.setItem('pedido', JSON.stringify(carrinho)); 
-  window.location.href = 'pagamento.html'; 
-}
-
-function showToast(msg) { 
-  const t = document.getElementById('toast'); 
-  t.textContent = msg; t.classList.add('show'); 
-  setTimeout(() => t.classList.remove('show'), 2500); 
-}
-
-// Inicializa a renderização dos produtos ao carregar o script
 renderProdutos();
