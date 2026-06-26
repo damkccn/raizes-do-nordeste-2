@@ -8,38 +8,13 @@ function switchTab(tab) {
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
+  t.textContent = msg; 
+  t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-
-function submitLogin(e) {
-  e.preventDefault();
-  const emailEl = document.getElementById('login-email');
-  const senhaEl = document.getElementById('login-senha');
-  const unidadSel = document.getElementById('select-unidade-login').value;
-  let ok = true;
-
-  emailEl.classList.toggle('error', !validateEmail(emailEl.value)); if (!validateEmail(emailEl.value)) ok = false;
-  senhaEl.classList.toggle('error', senhaEl.value.length < 6); if (senhaEl.value.length < 6) ok = false;
-
-  if (ok) {
-    const dbUser = localStorage.getItem(`user_${emailEl.value.trim().toLowerCase()}`);
-    if (!dbUser) {
-      alert('Este e-mail ainda não está registrado! Por favor, vá na aba "Criar conta" primeiro e aceite a LGPD.');
-      switchTab('cadastro');
-      return;
-    }
-
-    const dUsuario = JSON.parse(dbUser);
-    if(!dUsuario.aceitouLGPD) { alert('Erro cadastral referente aos termos de privacidade.'); return; }
-
-    localStorage.setItem('unidadeSelecionada', unidadSel);
-    localStorage.setItem('usuarioLogado', JSON.stringify(dUsuario));
-    showToast('Login realizado com sucesso! Redirecionando…');
-    setTimeout(() => window.location.href = 'cardapio.html', 1800);
-  }
+function validateEmail(v) { 
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); 
 }
 
 function submitCadastro(e) {
@@ -48,7 +23,7 @@ function submitCadastro(e) {
   const emailEl = document.getElementById('cad-email');
   const senhaEl = document.getElementById('cad-senha');
   const lgpd    = document.getElementById('lgpd-consent');
-  const unidadSel = document.getElementById('select-unidade-cad').value;
+  const unidade = document.getElementById('select-unidade-cad').value;
   let ok = true;
 
   nomeEl.classList.toggle('error', nomeEl.value.trim().length < 2);
@@ -56,7 +31,10 @@ function submitCadastro(e) {
   senhaEl.classList.toggle('error', senhaEl.value.length < 6);
   if (nomeEl.value.trim().length < 2 || !validateEmail(emailEl.value) || senhaEl.value.length < 6) ok = false;
 
-  if (!lgpd.checked) { alert('Você precisa obrigatoriamente aceitar as diretrizes da LGPD para prosseguir.'); ok = false; return; }
+  if (!lgpd.checked) { 
+    alert('Você precisa aceitar os termos da LGPD.'); 
+    return; 
+  }
 
   if (ok) {
     const conta = {
@@ -66,10 +44,41 @@ function submitCadastro(e) {
       data: new Date().toLocaleDateString('pt-BR')
     };
     localStorage.setItem(`user_${conta.email}`, JSON.stringify(conta));
-    localStorage.setItem('unidadeSelecionada', unidadSel);
+    localStorage.setItem('unidadeSelecionada', unidade);
     localStorage.setItem('usuarioLogado', JSON.stringify(conta));
 
-    showToast('Conta criada com sucesso!');
+    showToast('Conta criada com sucesso');
+    setTimeout(() => window.location.href = 'cardapio.html', 1800);
+  }
+}
+
+function submitLogin(e) {
+  e.preventDefault();
+  const emailEl = document.getElementById('login-email');
+  const senhaEl = document.getElementById('login-senha');
+  const unidade = document.getElementById('select-unidade-login').value;
+  let ok = true;
+
+  emailEl.classList.toggle('error', !validateEmail(emailEl.value)); if (!validateEmail(emailEl.value)) ok = false;
+  senhaEl.classList.toggle('error', senhaEl.value.length < 6); if (senhaEl.value.length < 6) ok = false;
+
+  if (ok) {
+    const dbUser = localStorage.getItem(`user_${emailEl.value.trim().toLowerCase()}`);
+    if (!dbUser) {
+      alert('E-mail não encontrado. Crie uma conta primeiro.');
+      switchTab('cadastro');
+      return;
+    }
+
+    const dados = JSON.parse(dbUser);
+    if(!dados.aceitouLGPD) { 
+      alert('Erro de privacidade.'); 
+      return; 
+    }
+
+    localStorage.setItem('unidadeSelecionada', unidade);
+    localStorage.setItem('usuarioLogado', JSON.stringify(dados));
+    showToast('Redirecionando…');
     setTimeout(() => window.location.href = 'cardapio.html', 1800);
   }
 }
