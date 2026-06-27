@@ -17,7 +17,7 @@ function carregarResumo() {
   if (!itens.length) { container.innerHTML = '<p>Vazio</p>'; document.getElementById('btn-pay').disabled = true; return; }
   
   let total = 0;
-  container.innerHTML = itens.map(i => { total += (i.preco * i.qty); return `<div class="order-item"><span>${i.emoji} ${i.nome} × ${i.qty}</span><span class="order-item-price">${fmt(i.preco * i.qty)}</span></div>`; }).join('');
+  container.innerHTML = itens.map(i => { total += (i.preco * i.qty); return `<div class="order-item"><span><img src="${i.imagem}" style="width: 24px; height: 24px; border-radius: 4px; vertical-align: middle; margin-right: 6px;"> ${i.nome} × ${i.qty}</span><span class="order-item-price">${fmt(i.preco * i.qty)}</span></div>`; }).join('');
   document.getElementById('resumo-total').textContent = fmt(total);
   document.getElementById('pontos-ganhar').textContent = Math.floor(total) + ' pontos';
 
