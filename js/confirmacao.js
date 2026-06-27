@@ -12,7 +12,7 @@ function carregarConfirmacao() {
   let total = 0;
   document.getElementById('itens-lista').innerHTML = p.itens.map(i => {
     total += (i.preco * i.qty);
-    return `<div class="item-row"><span>${i.emoji} ${i.nome} × ${i.qty}</span><span>${fmt(i.preco * i.qty)}</span></div>`;
+    return `<div class="item-row"><span><img src="${i.imagem}" style="width: 24px; height: 24px; border-radius: 4px; vertical-align: middle; margin-right: 6px;"> ${i.nome} × ${i.qty}</span><span>${fmt(i.preco * i.qty)}</span></div>`;
   }).join('');
   
   document.getElementById('total-pago').textContent = fmt(total);
