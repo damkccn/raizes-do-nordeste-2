@@ -2,7 +2,7 @@
 
 Este projeto nasceu do desejo de unir a riqueza da culinária nordestina à praticidade que o dia a dia exige. O **Raízes do Nordeste** é um sistema de gerenciamento de pedidos pensado para funcionar de um jeito super versátil e acolhedor, adaptando-se ao formato que o cliente precisa no momento.
 
-A ideia principal foi construir uma interface única que muda de comportamento dependendo da unidade selecionada. Assim, o mesmo sistema atende tanto quem está usando um **Totem de Autoatendimento** no salão físico quanto quem está em casa pedindo um **Delivery**.
+A ideia principal foi construir uma interface única que muda de comportamento dependendo da unidade selecionada. Assim, o mesmo sistema atende tanto quem está usando um **Totem de Autoatendimento** na unidade quanto quem está em casa pedindo um **Delivery**.
 
 ---
 
