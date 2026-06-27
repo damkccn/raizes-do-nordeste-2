@@ -65,7 +65,7 @@ function renderDrawer() {
   container.innerHTML = carrinho.map(i => `
     <div class="drawer-item">
       <div class="drawer-item-info">
-        <div class="drawer-item-name">${i.emoji} ${i.nome}</div>
+        <div class="drawer-item-name"><img src="${i.imagem}" style="width: 24px; height: 24px; border-radius: 4px; vertical-align: middle; margin-right: 6px;"> ${i.nome}</div>
         <div class="drawer-item-price">${formatPreco(i.preco * i.qty)}</div>
       </div>
       <div class="qty-ctrl">
