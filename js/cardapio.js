@@ -14,8 +14,8 @@ if(config.delivery) {
 }
 
 const produtos = [
-  { id:1, nome:'Tapioca Nordestina', desc:'Tapioca com manteiga de garrafa, queijo coalho e carne seca.', emoji:'🫓', preco:14.90, cat:'tapioca', badge:'Mais pedida', unidades:['recreio', 'campo-grande', 'centro'] },
-  { id:2, nome:'Tapioca de Coco', desc:'Tapioca recheada com coco ralado fresco e leite condensado.', emoji:'🥥', preco:12.50, cat:'tapioca', badge:'novo', unidades:['recreio', 'centro'] },
+  { id:1, nome:'Tapioca Nordestina', desc:'Tapioca com manteiga de garrafa, queijo coalho e carne seca.', preco:14.90, cat:'tapioca', badge:'Mais pedida', unidades:['recreio', 'campo-grande', 'centro'], imagem: 'img/tapioca_carne.jpg' },
+  { id:2, nome:'Tapioca de Coco', desc:'Tapioca recheada com coco ralado fresco e leite condensado.', emoji:'🥥', preco:12.50, cat:'tapioca', badge:'Novo', unidades:['recreio', 'centro'] },
   { id:3, nome:'Tapioca de Frango', desc:'Tapioca com frango desfiado temperado e ervas frescas.', emoji:'🍗', preco:13.90, cat:'tapioca', badge:'', unidades:['recreio', 'campo-grande', 'centro'] },
   { id:4, nome:'Cuscuz com Ovo', desc:'Cuscuz nordestino com ovo mexido e manteiga de garrafa.', emoji:'🌽', preco:11.00, cat:'cuscuz', badge:'', unidades:['recreio', 'campo-grande', 'centro'] },
   { id:5, nome:'Cuscuz Recheado', desc:'Cuscuz com carne seca desfiada, queijo e pimenta biquinho.', emoji:'🍱', preco:16.50, cat:'cuscuz', badge:'Mais pedida', unidades:['recreio', 'campo-grande', 'centro'] },
