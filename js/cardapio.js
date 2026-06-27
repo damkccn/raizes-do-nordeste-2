@@ -21,7 +21,7 @@ const produtos = [
   { id:5, nome:'Cuscuz Recheado', desc:'Cuscuz com carne seca desfiada, queijo e pimenta biquinho.', preco:16.50, cat:'cuscuz', badge:'Mais pedida', unidades:['recreio', 'campo-grande', 'centro'], imagem: 'img/cuscuz_recheado.jpg' },
   { id:6, nome:'Bolo de Macaxeira', desc:'Bolo úmido de macaxeira com calda de coco. Fatia generosa.', preco:8.00, cat:'bolo', badge:'', unidades:['recreio', 'campo-grande'], imagem: 'img/bolo_de_aipim.jpg' },
   { id:7, nome:'Bolo de Rolo', desc:'Tradicional bolo de rolo pernambucano com goiabada cremosa.', preco:9.50, cat:'bolo', badge:'Junho', unidades:['recreio', 'campo-grande', 'centro'], imagem: 'img/bolo_de_rolo.jpg' },
-  { id:8, nome:'Café Passado', desc:'Café coado na hora com grãos selecionados do sertão.', preco:6.00, cat:'cafe', badge:'', unidades:['recreio', 'centro'], imagem: 'img/cafe_coado.jpg' },
+  { id:8, nome:'Café Passado', desc:'Café coado na hora com grãos selecionados do sertão.', preco:6.00, cat:'cafe', badge:'', unidades:['recreio', 'centro'], imagem: 'img/cafe_passado.jpg' }, 
   { id:9, nome:'Suco de Umbú', desc:'Suco natural de umbú, fruta típica do sertão nordestino.', preco:9.00, cat:'bebida', badge:'Safra', unidades:['recreio', 'campo-grande', 'centro'], imagem: 'img/suco_de_umbu.jpg' },
   { id:10, nome:'Suco de Cajá', desc:'Suco natural de cajá fresquinho, puro e gelado.', preco:8.50, cat:'bebida', badge:'', unidades:['recreio', 'campo-grande', 'centro'], imagem: 'img/suco_de_caja.jpg' },
   { id:11, nome:'Café da Manhã Completo', desc:'Café + tapioca nordestina + bolo de macaxeira. O melhor do dia.', preco:28.90, cat:'cafe', badge:'Combo', esgotado: false, unidades:['recreio'], imagem: 'img/cafe_da_manha.jpg' },
